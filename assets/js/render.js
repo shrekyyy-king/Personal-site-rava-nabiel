@@ -14,7 +14,7 @@
   function img(s) { s = String(s || ''); return (/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(s) || /^https?:\/\//i.test(s) || /^[\w.\/-]+$/.test(s)) ? s : ''; }
   function lum(h) { var n = parseInt(h.slice(1), 16); function f(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); } return 0.2126 * f(n >> 16) + 0.7152 * f((n >> 8) & 255) + 0.0722 * f(n & 255); }
   function V(x) { return x && x.visible !== false; }
-  function render(root, d) {
+  function render(root, d, pv) {
     var p = d.profile || {}, a = d.appearance || {};
     var acc = /^#[0-9a-f]{6}$/i.test(a.accent) ? a.accent : '#1d4ed8';
     var dark = a.mode === 'dark' || (a.mode === 'auto' && w.matchMedia && w.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -27,11 +27,12 @@
     var ini = (p.name || '?').split(/\s+/).map(function (x) { return x[0]; }).slice(0, 2).join('').toUpperCase();
     var av = img(p.avatar) ? '<img class="avatar" src="' + esc(img(p.avatar)) + '" alt="' + esc(p.name) + '" width="104" height="104">' : '<div class="avatar" aria-hidden="true">' + esc(ini) + '</div>';
     var soc = (d.socials || []).filter(V).filter(function (x) { return x.url; });
+    var st = d.story || {}, storyOn = st.visible === true && (st.intro || (st.chapters || []).some(V));
     var h = '<header class="hero">' + av + '<h1>' + esc(p.name) + '</h1>' +
       (p.title ? '<p class="title">' + esc(p.title) + '</p>' : '') + (p.tagline ? '<p class="tag">' + esc(p.tagline) + '</p>' : '') +
       (p.bio ? '<p class="bio">' + esc(p.bio) + '</p>' : '') +
       ((p.location || p.status) ? '<p class="meta">' + [p.location, p.status].filter(Boolean).map(esc).join(' &nbsp;|&nbsp; ') + '</p>' : '') +
-      (soc.length ? '<div class="socials">' + soc.map(function (x) { return L(x.url, 'chip', esc(x.title)); }).join('') + '</div>' : '') + '</header>';
+      (soc.length ? '<div class="socials">' + soc.map(function (x) { return L(x.url, 'chip', esc(x.title)); }).join('') + '</div>' : '') + (storyOn ? '<div class="socials"><a class="chip" href="whoami.html"' + (pv ? ' target="_blank" rel="noopener"' : '') + '>Siapa saya →</a></div>' : '') + '</header>';
     (d.sections || []).filter(V).forEach(function (sc) {
       var ls = (sc.links || []).filter(V); if (!ls.length) return;
       h += '<section class="block"><h2>' + esc(sc.title) + '</h2><div class="links' + (sc.layout === 'grid' ? ' grid' : '') + '">' +
@@ -59,5 +60,18 @@
     h += '<footer>' + esc(d.footer || '') + '</footer>';
     root.innerHTML = '<div class="wrap">' + h + '</div>';
   }
-  w.R = { render: render, esc: esc, url: url, img: img, PRESETS: PRESETS, ICONS: ICONS };
+
+  function renderStory(root, d, pv) {
+    var st = d.story || {}, p = d.profile || {};
+    render(root, { appearance: d.appearance });
+    var ch = (st.chapters || []).filter(V);
+    function paras(t) { return String(t || '').split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean).map(function (x) { return '<p>' + esc(x).replace(/\n/g, '<br>') + '</p>'; }).join(''); }
+    var h = (pv ? '' : '<a class="back" href="./">← Beranda</a>') + '<header class="sh"><small>' + esc(p.name) + '</small><h1>' + esc(st.heading || 'Siapa saya') + '</h1>' + (st.intro ? '<p class="lead">' + esc(st.intro) + '</p>' : '') + '</header>';
+    ch.forEach(function (c, i) { h += '<section class="chap"><span class="num">' + ('0' + (i + 1)).slice(-2) + '</span><h2>' + esc(c.title) + '</h2>' + paras(c.body) + (c.quote ? '<blockquote>' + esc(c.quote) + '</blockquote>' : '') + '</section>'; });
+    if (!ch.length && !st.intro) h += '<p>Cerita belum ditulis.</p>';
+    if (st.cvUrl) h += '<a class="btn" href="' + esc(url(st.cvUrl)) + '" target="_blank" rel="noopener noreferrer"><span class="ic" aria-hidden="true">' + ICONS.doc + '</span><span><b>Lihat CV</b></span></a>';
+    h += '<footer>' + esc(d.footer || '') + '</footer>';
+    root.innerHTML = '<div class="wrap story">' + h + '</div>';
+  }
+  w.R = { render: render, renderStory: renderStory, esc: esc, url: url, img: img, PRESETS: PRESETS, ICONS: ICONS };
 })(window);

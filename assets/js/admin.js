@@ -3,7 +3,7 @@
   'use strict';
   var $ = function (s) { return document.querySelector(s); }, esc = R.esc;
   var K = { cfg: 'cms.cfg', draft: 'cms.draft', tok: 'cms.token' };
-  var TABS = [['overview', 'Overview'], ['profile', 'Profile'], ['links', 'Links'], ['sections', 'Sections'], ['projects', 'Projects'], ['appearance', 'Appearance'], ['settings', 'Settings']];
+  var TABS = [['overview', 'Overview'], ['profile', 'Profile'], ['links', 'Links'], ['sections', 'Sections'], ['projects', 'Projects'], ['story', 'Who am I'], ['appearance', 'Appearance'], ['settings', 'Settings']];
   function rd(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
   var S = { d: null, pub: '', sha: null, tab: 'overview', conn: false, hasDraft: false, dirty: false, lastPub: '', open: new Set(),
     cfg: Object.assign({ owner: '', repo: '', branch: 'main', path: 'data/content.json' }, rd(K.cfg, {})) };
@@ -23,6 +23,9 @@
     d.contact = Object.assign({ visible: false, email: '', whatsapp: '', linkedin: '' }, d.contact);
     d.appearance = Object.assign({ mode: 'auto', preset: 'professional', accent: '#1d4ed8', font: 'sans', radius: 10, button: 'outline', card: 'flat', align: 'center' }, d.appearance);
     d.footer = d.footer || '';
+    d.story = Object.assign({ visible: false, heading: 'Siapa saya', intro: '', cvUrl: '', chapters: [] }, d.story);
+    d.story.chapters = Array.isArray(d.story.chapters) ? d.story.chapters : [];
+    d.story.chapters.forEach(function (c) { c.id = c.id || uid(); });
     function id(x) { x.id = x.id || uid(); }
     d.socials.concat(d.sections, d.projects).forEach(id);
     d.sections.forEach(function (s) { s.links.forEach(id); });
@@ -38,6 +41,7 @@
     d.projects.forEach(function (x) { if (x.visible !== false && x.url) chk(x); });
     if (d.contact.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.contact.email)) e.push('Format email tidak valid.');
     if (d.contact.linkedin && !okUrl(d.contact.linkedin)) e.push('URL LinkedIn tidak valid.');
+    if (d.story.cvUrl && !okUrl(d.story.cvUrl)) e.push('URL CV tidak valid.');
     return e;
   }
   function say(t, k) {
@@ -73,6 +77,7 @@
     section: function () { return { id: uid(), title: 'Section baru', layout: 'list', visible: true, links: [] }; },
     project: function () { return { id: uid(), title: 'Proyek baru', description: '', thumb: '', url: '', category: '', date: '', visible: true }; }
   };
+  NEW.chapter = function () { return { id: uid(), title: 'Bab baru', body: '', quote: '', visible: true }; };
   var ICONOPTS = function () { return Object.keys(R.ICONS).map(function (k) { return [k, R.ICONS[k] + ' ' + k]; }); };
 
   var T = {
@@ -105,6 +110,10 @@
         return F('Judul', p + '.title') + F('Deskripsi', p + '.description', { t: 'ta' }) + F('URL proyek', p + '.url') + F('Kategori', p + '.category') + F('Tanggal (opsional)', p + '.date') + F('Thumbnail', p + '.thumb', { t: 'img', max: 800 }) + F('Tampilkan', p + '.visible', { t: 'chk' });
       });
     },
+    story: function () {
+      return '<h2>Who am I</h2><p class="note">Tulis ceritamu dalam bab-bab. Pisahkan paragraf dengan satu baris kosong.</p>' + F('Tampilkan halaman & tautan di beranda', 'story.visible', { t: 'chk' }) + F('Judul halaman', 'story.heading') + F('Pembuka', 'story.intro', { t: 'ta', r: 3 }) + F('Link CV (opsional)', 'story.cvUrl') +
+        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
+    },
     appearance: function () {
       var A = S.d.appearance;
       return '<h2>Tampilan</h2><div class="row">' + Object.keys(R.PRESETS).map(function (k) { return '<button data-a="preset" data-v="' + k + '"' + (A.preset === k ? ' aria-pressed="true"' : '') + '>' + k[0].toUpperCase() + k.slice(1) + '</button>'; }).join('') + '</div>' +
@@ -130,7 +139,7 @@
     $('#badges').innerHTML = '<span class="bd' + (S.conn ? ' ok' : '') + '">' + (S.conn ? 'GitHub terhubung' : 'Belum terhubung') + '</span><span class="bd' + (S.dirty || diff ? ' warn' : '') + '">' + (S.dirty ? 'Belum disimpan' : S.hasDraft ? 'Draft tersimpan' : diff ? 'Berbeda dari published' : 'Sesuai published') + '</span>';
     $('#nav').innerHTML = TABS.map(function (t) { return '<button data-a="tab" data-v="' + t[0] + '"' + (S.tab === t[0] ? ' aria-current="page"' : '') + '>' + t[1] + '</button>'; }).join('');
   }
-  function pv() { R.render($('#pv'), S.d); }
+  function pv() { if (S.tab === 'story') R.renderStory($('#pv'), S.d, true); else R.render($('#pv'), S.d, true); }
   function main() { $('#main').innerHTML = T[S.tab](); bar(); }
   function changed(re) { S.dirty = true; pv(); if (re) main(); else bar(); }
   function shell() {
@@ -152,7 +161,7 @@
     try {
       var r = await GH.read(c, c.path), j = JSON.parse(r.text);
       S.sha = r.sha; S.pub = JSON.stringify(norm(clone(j))); S.conn = true;
-      if (!S.hasDraft) S.d = norm(j);
+      if (!S.hasDraft && !S.dirty) S.d = norm(j);
       if (!silent) say('Terhubung. Konten dimuat dari GitHub.', 'ok');
     } catch (e) { S.conn = false; say(e.message, 'err'); }
   }
@@ -206,7 +215,7 @@
   document.addEventListener('click', async function (e) {
     var b = e.target.closest('[data-a]'); if (!b) return; e.preventDefault();
     var a = b.dataset.a, l = b.dataset.l, i = +b.dataset.i, v = b.dataset.v;
-    if (a === 'tab') { S.tab = v; main(); }
+    if (a === 'tab') { S.tab = v; main(); pv(); }
     else if (a === 'up') move(l, i, i - 1);
     else if (a === 'down') move(l, i, i + 1);
     else if (a === 'dup') { var arr = get(S.d, l), c = clone(arr[i]); reid(c); c.title = (c.title || '') + ' (salinan)'; arr.splice(i + 1, 0, c); changed(true); }

@@ -1,20 +1,89 @@
 {
-  "meta": {"title": "Mr. Boss", "description": "A personal space for my academic journey, professional development, projects, and interests."},
-  "profile": {"name": "Mr. Boss", "title": "Psychology Student | Aspiring Professional | Lifelong Learner", "bio": "A personal space for my academic journey, professional development, projects, and interests.", "tagline": "", "location": "", "status": "", "avatar": ""},
+  "meta": {
+    "title": "Mr. Boss",
+    "description": "A personal space for my academic journey, professional development, projects, and interests."
+  },
+  "profile": {
+    "name": "Muhammad Rava Nabiel",
+    "title": "Psychology Student | Aspiring Professional | Lifelong Learner",
+    "bio": "A personal space for my academic journey, professional development, projects, and interests.",
+    "tagline": "",
+    "location": "",
+    "status": "",
+    "avatar": "assets/images/aefw3um.webp"
+  },
   "socials": [
-    {"id": "s1", "title": "Instagram", "url": "", "description": "", "visible": false},
-    {"id": "s2", "title": "LinkedIn", "url": "", "description": "", "visible": false},
-    {"id": "s3", "title": "GitHub", "url": "", "description": "", "visible": false}
+    {
+      "id": "s1",
+      "title": "Instagram",
+      "url": "",
+      "description": "",
+      "visible": false
+    },
+    {
+      "id": "s2",
+      "title": "LinkedIn",
+      "url": "",
+      "description": "",
+      "visible": false
+    },
+    {
+      "id": "s3",
+      "title": "GitHub",
+      "url": "",
+      "description": "",
+      "visible": false
+    }
   ],
   "sections": [
-    {"id": "sec1", "title": "Tautan utama", "layout": "list", "visible": true, "links": [
-      {"id": "l1", "title": "Curriculum Vitae", "description": "Ganti URL dengan tautan CV Anda", "url": "#", "icon": "doc", "visible": true},
-      {"id": "l2", "title": "Portofolio Akademik", "description": "Ganti URL dengan tautan portofolio Anda", "url": "#", "icon": "star", "visible": true}
-    ]}
+    {
+      "id": "sec1",
+      "title": "Tautan utama",
+      "layout": "list",
+      "visible": true,
+      "links": [
+        {
+          "id": "l1",
+          "title": "Curriculum Vitae",
+          "description": "Ganti URL dengan tautan CV Anda",
+          "url": "#",
+          "icon": "doc",
+          "visible": true
+        },
+        {
+          "id": "l2",
+          "title": "Portofolio Akademik",
+          "description": "Ganti URL dengan tautan portofolio Anda",
+          "url": "#",
+          "icon": "star",
+          "visible": true
+        }
+      ]
+    }
   ],
-  "about": {"visible": false, "intro": "", "education": "", "interests": "", "skills": ""},
+  "about": {
+    "visible": false,
+    "intro": "",
+    "education": "",
+    "interests": "",
+    "skills": ""
+  },
   "projects": [],
-  "contact": {"visible": false, "email": "", "whatsapp": "", "linkedin": ""},
-  "appearance": {"mode": "auto", "preset": "professional", "accent": "#1d4ed8", "font": "sans", "radius": 10, "button": "outline", "card": "flat", "align": "center"},
+  "contact": {
+    "visible": false,
+    "email": "",
+    "whatsapp": "",
+    "linkedin": ""
+  },
+  "appearance": {
+    "mode": "auto",
+    "preset": "professional",
+    "accent": "#1d4ed8",
+    "font": "sans",
+    "radius": 10,
+    "button": "outline",
+    "card": "flat",
+    "align": "center"
+  },
   "footer": "© Mr. Boss"
 }

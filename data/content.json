@@ -59,6 +59,22 @@
           "visible": true
         }
       ]
+    },
+    {
+      "id": "qnwzzdk",
+      "title": "About me",
+      "layout": "list",
+      "visible": true,
+      "links": [
+        {
+          "id": "1ox9rlk",
+          "title": "About me",
+          "description": "Perjalanan saya",
+          "url": "whoami.html",
+          "icon": "star",
+          "visible": true
+        }
+      ]
     }
   ],
   "about": {

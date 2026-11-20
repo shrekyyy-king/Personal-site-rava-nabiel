@@ -16,14 +16,14 @@
   function norm(d) {
     d = d || {};
     d.meta = Object.assign({ title: '', description: '' }, d.meta);
-    d.profile = Object.assign({ name: '', title: '', bio: '', tagline: '', location: '', status: '', avatar: '' }, d.profile);
+    d.profile = Object.assign({ name: '', title: '', bio: '', tagline: '', location: '', status: '', avatar: '', cover: '' }, d.profile);
     ['socials', 'sections', 'projects'].forEach(function (k) { d[k] = Array.isArray(d[k]) ? d[k] : []; });
     d.sections.forEach(function (s) { s.links = Array.isArray(s.links) ? s.links : []; });
     d.about = Object.assign({ visible: false, intro: '', education: '', interests: '', skills: '' }, d.about);
     d.contact = Object.assign({ visible: false, email: '', whatsapp: '', linkedin: '' }, d.contact);
-    d.appearance = Object.assign({ mode: 'auto', preset: 'professional', accent: '#1d4ed8', font: 'sans', radius: 10, button: 'outline', card: 'flat', align: 'center' }, d.appearance);
+    d.appearance = Object.assign({ mode: 'auto', preset: 'professional', accent: '#1d4ed8', font: 'sans', radius: 10, button: 'outline', card: 'flat', align: 'left' }, d.appearance);
     d.footer = d.footer || '';
-    d.story = Object.assign({ visible: false, heading: 'Siapa saya', intro: '', cvUrl: '', chapters: [] }, d.story);
+    d.story = Object.assign({ visible: false, heading: 'Siapa saya', buttonLabel: 'Siapa saya', intro: '', cvUrl: '', chapters: [] }, d.story);
     d.story.chapters = Array.isArray(d.story.chapters) ? d.story.chapters : [];
     d.story.chapters.forEach(function (c) { c.id = c.id || uid(); });
     function id(x) { x.id = x.id || uid(); }
@@ -77,7 +77,7 @@
     section: function () { return { id: uid(), title: 'Section baru', layout: 'list', visible: true, links: [] }; },
     project: function () { return { id: uid(), title: 'Proyek baru', description: '', thumb: '', url: '', category: '', date: '', visible: true }; }
   };
-  NEW.chapter = function () { return { id: uid(), title: 'Bab baru', body: '', quote: '', visible: true }; };
+  NEW.chapter = function () { return { id: uid(), title: 'Bab baru', body: '', quote: '', photo: '', visible: true }; };
   var ICONOPTS = function () { return Object.keys(R.ICONS).map(function (k) { return [k, R.ICONS[k] + ' ' + k]; }); };
 
   var T = {
@@ -91,7 +91,7 @@
     },
     profile: function () {
       return '<h2>Profile</h2>' + F('Nama', 'profile.name') + F('Title profesional', 'profile.title') + F('Tagline', 'profile.tagline') + F('Biografi', 'profile.bio', { t: 'ta', r: 4 }) +
-        F('Lokasi (opsional)', 'profile.location') + F('Status ketersediaan (opsional)', 'profile.status') + F('Foto profil', 'profile.avatar', { t: 'img', max: 512 }) +
+        F('Lokasi (opsional)', 'profile.location') + F('Status ketersediaan (opsional)', 'profile.status') + F('Foto profil', 'profile.avatar', { t: 'img', max: 512 }) + F('Foto latar beranda (disarankan landscape)', 'profile.cover', { t: 'img', max: 1400 }) +
         '<h3>Tentang saya</h3>' + F('Tampilkan section', 'about.visible', { t: 'chk' }) + F('Pengantar', 'about.intro', { t: 'ta' }) + F('Pendidikan', 'about.education', { t: 'ta', r: 2 }) +
         F('Minat', 'about.interests', { t: 'ta', r: 2 }) + F('Keahlian (pisahkan dengan koma)', 'about.skills');
     },
@@ -102,7 +102,7 @@
     sections: function () {
       return '<h2>Section & link</h2>' + list('sections', 'section', 'Tambah section', function (s, p) {
         return F('Judul section', p + '.title') + F('Layout', p + '.layout', { t: 'sel', o: [['list', 'Daftar'], ['grid', 'Grid']] }) + F('Tampilkan', p + '.visible', { t: 'chk' }) + '<h3>Link</h3>' +
-          list(p + '.links', 'link', 'Tambah link', function (l, q) { return F('Judul', q + '.title') + F('Deskripsi', q + '.description') + F('URL', q + '.url') + F('Ikon', q + '.icon', { t: 'sel', o: ICONOPTS() }) + F('Tampilkan', q + '.visible', { t: 'chk' }); });
+          list(p + '.links', 'link', 'Tambah link', function (l, q) { return F('Judul', q + '.title') + F('Deskripsi', q + '.description') + F('URL', q + '.url') + F('Ikon', q + '.icon', { t: 'sel', o: ICONOPTS() }) + F('Thumbnail (opsional, menggantikan ikon)', q + '.thumb', { t: 'img', max: 160 }) + F('Tampilkan', q + '.visible', { t: 'chk' }); });
       });
     },
     projects: function () {
@@ -111,8 +111,8 @@
       });
     },
     story: function () {
-      return '<h2>Who am I</h2><p class="note">Tulis ceritamu dalam bab-bab. Pisahkan paragraf dengan satu baris kosong.</p>' + F('Tampilkan halaman & tautan di beranda', 'story.visible', { t: 'chk' }) + F('Judul halaman', 'story.heading') + F('Pembuka', 'story.intro', { t: 'ta', r: 3 }) + F('Link CV (opsional)', 'story.cvUrl') +
-        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
+      return '<h2>Who am I</h2><p class="note">Tulis ceritamu dalam bab-bab. Pisahkan paragraf dengan satu baris kosong.</p>' + F('Tampilkan halaman & tautan di beranda', 'story.visible', { t: 'chk' }) + F('Judul halaman', 'story.heading') + F('Teks tombol di beranda', 'story.buttonLabel') + F('Pembuka', 'story.intro', { t: 'ta', r: 3 }) + F('Link CV (opsional)', 'story.cvUrl') +
+        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Foto latar bab (opsional)', p + '.photo', { t: 'img', max: 1400 }) + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
     },
     appearance: function () {
       var A = S.d.appearance;
@@ -120,7 +120,7 @@
         F('Mode', 'appearance.mode', { t: 'sel', o: [['auto', 'Otomatis'], ['light', 'Terang'], ['dark', 'Gelap']] }) + F('Warna aksen', 'appearance.accent', { t: 'color' }) +
         F('Font', 'appearance.font', { t: 'sel', o: [['sans', 'Sans-serif'], ['serif', 'Serif (judul)'], ['mono', 'Monospace']] }) + F('Border radius', 'appearance.radius', { t: 'range', x: 'min="0" max="28"' }) +
         F('Gaya tombol', 'appearance.button', { t: 'sel', o: [['outline', 'Outline'], ['solid', 'Solid']] }) + F('Gaya kartu', 'appearance.card', { t: 'sel', o: [['flat', 'Flat'], ['raised', 'Bayangan halus']] }) +
-        F('Layout profil', 'appearance.align', { t: 'sel', o: [['center', 'Tengah'], ['left', 'Kiri']] });
+        F('Layout profil', 'appearance.align', { t: 'sel', o: [['left', 'Kiri'], ['center', 'Tengah']] });
     },
     settings: function () {
       var c = S.cfg, url = c.owner && c.repo ? 'https://' + c.owner + '.github.io/' + c.repo + '/' : '';
@@ -166,7 +166,7 @@
     } catch (e) { S.conn = false; say(e.message, 'err'); }
   }
   async function uploadImages(c, d) {
-    var slots = [[d.profile, 'avatar']].concat(d.projects.map(function (p) { return [p, 'thumb']; }));
+    var slots = [[d.profile, 'avatar'], [d.profile, 'cover']].concat(d.projects.map(function (p) { return [p, 'thumb']; }), d.sections.reduce(function (a, s) { return a.concat(s.links.map(function (l) { return [l, 'thumb']; })); }, []), d.story.chapters.map(function (c) { return [c, 'photo']; }));
     for (var i = 0; i < slots.length; i++) {
       var o = slots[i][0], k = slots[i][1], m = /^data:image\/(\w+);base64,(.+)$/.exec(o[k] || '');
       if (m) { var path = 'assets/images/' + uid() + '.' + (m[1] === 'jpeg' ? 'jpg' : m[1]); await GH.put(c, path, m[2], 'Upload gambar via dashboard'); o[k] = path; }

@@ -91,7 +91,7 @@
     },
     profile: function () {
       return '<h2>Profile</h2>' + F('Nama', 'profile.name') + F('Title profesional', 'profile.title') + F('Tagline', 'profile.tagline') + F('Biografi', 'profile.bio', { t: 'ta', r: 4 }) +
-        F('Lokasi (opsional)', 'profile.location') + F('Status ketersediaan (opsional)', 'profile.status') + F('Foto profil', 'profile.avatar', { t: 'img', max: 512 }) + F('Foto latar beranda (disarankan landscape)', 'profile.cover', { t: 'img', max: 1400 }) +
+        F('Lokasi (opsional)', 'profile.location') + F('Status ketersediaan (opsional)', 'profile.status') + F('Foto profil', 'profile.avatar', { t: 'img', max: 512 }) + F('Foto latar beranda (disarankan POTRET / portrait)', 'profile.cover', { t: 'img', max: 1400 }) +
         '<h3>Tentang saya</h3>' + F('Tampilkan section', 'about.visible', { t: 'chk' }) + F('Pengantar', 'about.intro', { t: 'ta' }) + F('Pendidikan', 'about.education', { t: 'ta', r: 2 }) +
         F('Minat', 'about.interests', { t: 'ta', r: 2 }) + F('Keahlian (pisahkan dengan koma)', 'about.skills');
     },
@@ -112,7 +112,7 @@
     },
     story: function () {
       return '<h2>Who am I</h2><p class="note">Tulis ceritamu dalam bab-bab. Pisahkan paragraf dengan satu baris kosong.</p>' + F('Tampilkan halaman & tautan di beranda', 'story.visible', { t: 'chk' }) + F('Judul halaman', 'story.heading') + F('Teks tombol di beranda', 'story.buttonLabel') + F('Pembuka', 'story.intro', { t: 'ta', r: 3 }) + F('Link CV (opsional)', 'story.cvUrl') +
-        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Foto latar bab (opsional)', p + '.photo', { t: 'img', max: 1400 }) + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
+        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Foto latar bab (potret, opsional)', p + '.photo', { t: 'img', max: 1400 }) + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
     },
     appearance: function () {
       var A = S.d.appearance;

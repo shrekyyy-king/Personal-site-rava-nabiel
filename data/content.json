@@ -5,27 +5,28 @@
   },
   "profile": {
     "name": "Muhammad Rava Nabiel",
-    "title": "Psychology Student | Aspiring Professional | Lifelong Learner",
+    "title": "Psychology Student | Universitas Muhammadiyah Surakarta",
     "bio": "A personal space for my academic journey, professional development, projects, and interests.",
     "tagline": "",
     "location": "",
     "status": "",
-    "avatar": "assets/images/aefw3um.webp"
+    "avatar": "assets/images/e6gfhz5.webp",
+    "cover": "assets/images/qotjoz1.webp"
   },
   "socials": [
     {
       "id": "s1",
       "title": "Instagram",
-      "url": "",
+      "url": "https://www.instagram.com/mrofanabuel_?bqrl=MWR4dnFuYzVxY3VjaQ==",
       "description": "",
-      "visible": false
+      "visible": true
     },
     {
       "id": "s2",
       "title": "LinkedIn",
-      "url": "",
+      "url": "www.linkedin.com/in/muhammad-rava-nabiel-079a95373",
       "description": "",
-      "visible": false
+      "visible": true
     },
     {
       "id": "s3",
@@ -84,27 +85,39 @@
     "interests": "",
     "skills": ""
   },
-  "projects": [],
+  "projects": [
+    {
+      "id": "k5cas1n",
+      "title": "Excel",
+      "description": "",
+      "thumb": "",
+      "url": "",
+      "category": "",
+      "date": "",
+      "visible": true
+    }
+  ],
   "contact": {
-    "visible": false,
-    "email": "",
+    "visible": true,
+    "email": "nabielrava114@gmail.com",
     "whatsapp": "",
     "linkedin": ""
   },
   "appearance": {
     "mode": "auto",
-    "preset": "professional",
-    "accent": "#1d4ed8",
-    "font": "sans",
-    "radius": 10,
+    "preset": "elegant",
+    "accent": "#8a6d3b",
+    "font": "serif",
+    "radius": 12,
     "button": "outline",
     "card": "flat",
     "align": "center"
   },
   "footer": "© Mr. Boss",
   "story": {
-    "visible": true,
+    "visible": false,
     "heading": "Who Am I?  ",
+    "buttonLabel": "Siapa saya",
     "intro": " A Little About Me  I'm a Psychology student at Universitas Muhammadiyah Surakarta (UMS), currently exploring the intersection of human behavior, technology, finance, and personal development.  I consider myself a curious person who enjoys learning new things, exploring different perspectives, and understanding how things work. I'm particularly interested in psychology, not only as an academic discipline but also as a way to understand people, human behavior, and everyday life.  ## Beyond Psychology  My interests go beyond the classroom.  - **Psychology:** Understanding human behavior, emotions, cognition, and the way people interact. - **Finance & Investment:** Learning about financial management, stocks, long-term investing, and building financial independence. - **Technology:** Exploring AI, coding, web development, Excel, and digital products. - **Business:** Experimenting with business ideas and learning how to turn concepts into practical opportunities. - **Personal Development:** Continuously improving my skills, knowledge, discipline, and perspective.  ## My Mindset  I believe that learning should never stop at simply knowing something. I want to understand it, question it, and eventually put it into practice.  I'm someone who enjoys connecting different fields of knowledge. Psychology helps me understand people, technology gives me tools to create, and finance teaches me to think about the future.  I don't expect to have everything figured out right now. I'm still exploring, experimenting, making mistakes, and building my own direction.  ## Looking Ahead  I have ambitions that extend beyond my current circumstances. I want to build a meaningful career, achieve financial independence, pursue further education, and create a stable life for the people I care about.  For me, success isn't just about professional achievements or financial numbers. It's also about having the freedom to explore, the ability to contribute, and the opportunity to experience more of what the world has to offer.  ## A Few Things About Me  - Psychology student at UMS. - A Manchester United supporter. - Interested in technology, finance, and entrepreneurship. - Enjoys learning independently and exploring new ideas. - Always curious about how things work.  ",
     "cvUrl": "",
     "chapters": [
@@ -113,7 +126,8 @@
         "title": "DPM F Psikologi UMS",
         "body": "## My Journey in Student Government\n\nBeing part of the Student Representative Council (Dewan Perwakilan Mahasiswa / DPM) at the Faculty of Psychology, Universitas Muhammadiyah Surakarta, has been an important part of my university journey.\n\nIn 2026, I became part of **DPM Faculty of Psychology**, serving in the Legislative Body (Badan Legislasi) within the Sapta Cipta Parliament.\n\nThrough this role, I have been involved in student governance, legislative processes, organizational development, and the formulation of regulations that support a better student organization ecosystem.\n\nMy responsibilities and experiences include:\n\n- **Legislative Development:** Contributing to the development, review, and evaluation of organizational regulations and institutional frameworks.\n- **Student Representation:** Understanding student aspirations and helping ensure they are considered in organizational decision-making.\n- **Institutional Collaboration:** Participating in coordination and agreements between DPM and the Student Executive Board (BEM).\n- **Organizational Development:** Contributing to initiatives that improve institutional capacity, accountability, and organizational effectiveness.\n- **Strategic Initiatives:** Taking part in programs related to student engagement, legislative education, and organizational improvement.\n\nThis experience has taught me that leadership is not simply about holding a position. It involves responsibility, critical thinking, effective communication, and the ability to balance different perspectives.\n\nI have come to appreciate the importance of governance, accountability, and constructive collaboration in building sustainable institutions.\n\n**For me, student government is a place to learn how organizations work, how decisions are made, and how ideas can be translated into meaningful change.**",
         "quote": "",
-        "visible": true
+        "visible": true,
+        "photo": "assets/images/32tn9gx.webp"
       },
       {
         "id": "w4j1zpd",

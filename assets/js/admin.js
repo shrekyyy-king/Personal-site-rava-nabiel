@@ -3,7 +3,7 @@
   'use strict';
   var $ = function (s) { return document.querySelector(s); }, esc = R.esc;
   var K = { cfg: 'cms.cfg', draft: 'cms.draft', tok: 'cms.token' };
-  var TABS = [['overview', 'Overview'], ['profile', 'Profile'], ['links', 'Links'], ['sections', 'Sections'], ['projects', 'Projects'], ['story', 'Who am I'], ['appearance', 'Appearance'], ['settings', 'Settings']];
+  var TABS = [['overview', 'Overview'], ['profile', 'Profile'], ['links', 'Links'], ['sections', 'Sections'], ['projects', 'Projects'], ['media', 'Media'], ['story', 'Who am I'], ['appearance', 'Appearance'], ['settings', 'Settings']];
   function rd(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
   var S = { d: null, pub: '', sha: null, tab: 'overview', conn: false, hasDraft: false, dirty: false, lastPub: '', open: new Set(),
     cfg: Object.assign({ owner: '', repo: '', branch: 'main', path: 'data/content.json' }, rd(K.cfg, {})) };
@@ -21,11 +21,13 @@
     d.sections.forEach(function (s) { s.links = Array.isArray(s.links) ? s.links : []; });
     d.about = Object.assign({ visible: false, intro: '', education: '', interests: '', skills: '' }, d.about);
     d.contact = Object.assign({ visible: false, email: '', whatsapp: '', linkedin: '' }, d.contact);
-    d.appearance = Object.assign({ mode: 'auto', preset: 'professional', accent: '#1d4ed8', font: 'sans', radius: 10, button: 'outline', card: 'flat', align: 'left' }, d.appearance);
+    d.appearance = Object.assign({ mode: 'auto', preset: 'professional', accent: '#1d4ed8', font: 'sans', radius: 10, button: 'outline', card: 'flat', align: 'left', palette: 'default', linkLayout: 'bento', heroStyle: 'split', shape: 'rounded', motion: 'full' }, d.appearance);
     d.footer = d.footer || '';
     d.story = Object.assign({ visible: false, heading: 'Siapa saya', buttonLabel: 'Siapa saya', intro: '', cvUrl: '', chapters: [] }, d.story);
     d.story.chapters = Array.isArray(d.story.chapters) ? d.story.chapters : [];
     d.story.chapters.forEach(function (c) { c.id = c.id || uid(); });
+    d.blocks = Array.isArray(d.blocks) ? d.blocks : [];
+    d.blocks.forEach(function (b) { b.id = b.id || uid(); if (b.type === 'gallery') { b.photos = Array.isArray(b.photos) ? b.photos : []; b.photos.forEach(function (p) { p.id = p.id || uid(); }); } });
     function id(x) { x.id = x.id || uid(); }
     d.socials.concat(d.sections, d.projects).forEach(id);
     d.sections.forEach(function (s) { s.links.forEach(id); });
@@ -41,6 +43,8 @@
     d.projects.forEach(function (x) { if (x.visible !== false && x.url) chk(x); });
     if (d.contact.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.contact.email)) e.push('Format email tidak valid.');
     if (d.contact.linkedin && !okUrl(d.contact.linkedin)) e.push('URL LinkedIn tidak valid.');
+    d.blocks.forEach(function (b) { if (b.visible !== false && b.type === 'video' && !R.video(b.url)) e.push('URL video tidak dikenali: ' + (b.title || 'video')); });
+    d.story.chapters.forEach(function (c) { if (c.video && !R.video(c.video)) e.push('URL video bab tidak dikenali: ' + c.title); });
     if (d.story.cvUrl && !okUrl(d.story.cvUrl)) e.push('URL CV tidak valid.');
     return e;
   }
@@ -65,7 +69,7 @@
   }
   function item(l, i, n, x, body) {
     return '<details class="item" data-list="' + l + '" data-i="' + i + '" data-id="' + x.id + '"' + (S.open.has(x.id) ? ' open' : '') + '><summary><span class="grip" title="Seret untuk mengurutkan">⠿</span><span class="sum">' +
-      (esc(x.title) || '(tanpa judul)') + (x.visible === false ? '<em>tersembunyi</em>' : '') + '</span>' + tools(l, i, n) + '</summary><div class="body">' + body + '</div></details>';
+      (esc(x.title || x.caption) || '(tanpa judul)') + (x.visible === false ? '<em>tersembunyi</em>' : '') + '</span>' + tools(l, i, n) + '</summary><div class="body">' + body + '</div></details>';
   }
   function list(l, kind, label, fn) {
     var a = get(S.d, l);
@@ -73,11 +77,16 @@
   }
   var NEW = {
     social: function () { return { id: uid(), title: 'Link baru', url: '', description: '', visible: true }; },
-    link: function () { return { id: uid(), title: 'Link baru', description: '', url: '', icon: 'link', visible: true }; },
-    section: function () { return { id: uid(), title: 'Section baru', layout: 'list', visible: true, links: [] }; },
+    link: function () { return { id: uid(), title: 'Link baru', description: '', url: '', icon: 'link', size: 's', badge: '', visible: true }; },
+    section: function () { return { id: uid(), title: 'Section baru', layout: 'bento', width: 'full', visible: true, links: [] }; },
     project: function () { return { id: uid(), title: 'Proyek baru', description: '', thumb: '', url: '', category: '', date: '', visible: true }; }
   };
-  NEW.chapter = function () { return { id: uid(), title: 'Bab baru', body: '', quote: '', photo: '', visible: true }; };
+  NEW.chapter = function () { return { id: uid(), title: 'Bab baru', body: '', quote: '', photo: '', video: '', visible: true }; };
+  NEW.b_gallery = function () { return { id: uid(), type: 'gallery', title: 'Galeri', layout: 'masonry', width: 'full', visible: true, photos: [] }; };
+  NEW.b_video = function () { return { id: uid(), type: 'video', title: 'Video', url: '', caption: '', width: 'half', visible: true }; };
+  NEW.b_text = function () { return { id: uid(), type: 'text', title: 'Catatan', body: '', width: 'half', visible: true }; };
+  NEW.b_quote = function () { return { id: uid(), type: 'quote', title: 'Kutipan', text: '', by: '', width: 'half', visible: true }; };
+  NEW.photo = function () { return { id: uid(), src: '', caption: '' }; };
   var ICONOPTS = function () { return Object.keys(R.ICONS).map(function (k) { return [k, R.ICONS[k] + ' ' + k]; }); };
 
   var T = {
@@ -91,7 +100,7 @@
     },
     profile: function () {
       return '<h2>Profile</h2>' + F('Nama', 'profile.name') + F('Title profesional', 'profile.title') + F('Tagline', 'profile.tagline') + F('Biografi', 'profile.bio', { t: 'ta', r: 4 }) +
-        F('Lokasi (opsional)', 'profile.location') + F('Status ketersediaan (opsional)', 'profile.status') + F('Foto profil', 'profile.avatar', { t: 'img', max: 512 }) + F('Foto latar beranda (disarankan POTRET / portrait)', 'profile.cover', { t: 'img', max: 1400 }) +
+        F('Lokasi (opsional)', 'profile.location') + F('Status ketersediaan (opsional)', 'profile.status') + F('Foto profil', 'profile.avatar', { t: 'img', max: 512 }) + F('Foto beranda (potret atau landscape, tampil apa adanya)', 'profile.cover', { t: 'img', max: 1400 }) +
         '<h3>Tentang saya</h3>' + F('Tampilkan section', 'about.visible', { t: 'chk' }) + F('Pengantar', 'about.intro', { t: 'ta' }) + F('Pendidikan', 'about.education', { t: 'ta', r: 2 }) +
         F('Minat', 'about.interests', { t: 'ta', r: 2 }) + F('Keahlian (pisahkan dengan koma)', 'about.skills');
     },
@@ -101,8 +110,8 @@
     },
     sections: function () {
       return '<h2>Section & link</h2>' + list('sections', 'section', 'Tambah section', function (s, p) {
-        return F('Judul section', p + '.title') + F('Layout', p + '.layout', { t: 'sel', o: [['list', 'Daftar'], ['grid', 'Grid']] }) + F('Tampilkan', p + '.visible', { t: 'chk' }) + '<h3>Link</h3>' +
-          list(p + '.links', 'link', 'Tambah link', function (l, q) { return F('Judul', q + '.title') + F('Deskripsi', q + '.description') + F('URL', q + '.url') + F('Ikon', q + '.icon', { t: 'sel', o: ICONOPTS() }) + F('Thumbnail (opsional, menggantikan ikon)', q + '.thumb', { t: 'img', max: 160 }) + F('Tampilkan', q + '.visible', { t: 'chk' }); });
+        return F('Judul section', p + '.title') + F('Layout', p + '.layout', { t: 'sel', o: [['bento', 'Bento'], ['list', 'Daftar'], ['grid', 'Kartu']] }) + F('Lebar di beranda', p + '.width', { t: 'sel', o: [['full', 'Penuh'], ['half', 'Setengah (sejajar)']] }) + F('Tampilkan', p + '.visible', { t: 'chk' }) + '<h3>Link</h3>' +
+          list(p + '.links', 'link', 'Tambah link', function (l, q) { return F('Judul', q + '.title') + F('Deskripsi', q + '.description') + F('URL', q + '.url') + F('Ikon', q + '.icon', { t: 'sel', o: ICONOPTS() }) + F('Thumbnail (opsional, menggantikan ikon)', q + '.thumb', { t: 'img', max: 700 }) + F('Ukuran tile (layout Bento)', q + '.size', { t: 'sel', o: [['s', 'Kecil'], ['w', 'Lebar'], ['l', 'Besar']] }) + F('Badge (mis. Baru)', q + '.badge') + F('Tampilkan', q + '.visible', { t: 'chk' }); });
       });
     },
     projects: function () {
@@ -110,16 +119,30 @@
         return F('Judul', p + '.title') + F('Deskripsi', p + '.description', { t: 'ta' }) + F('URL proyek', p + '.url') + F('Kategori', p + '.category') + F('Tanggal (opsional)', p + '.date') + F('Thumbnail', p + '.thumb', { t: 'img', max: 800 }) + F('Tampilkan', p + '.visible', { t: 'chk' });
       });
     },
+    media: function () {
+      var a = S.d.blocks;
+      function fields(b, p) {
+        var c = F('Judul (opsional)', p + '.title') + F('Lebar di beranda', p + '.width', { t: 'sel', o: [['full', 'Penuh'], ['half', 'Setengah (sejajar)']] }) + F('Tampilkan', p + '.visible', { t: 'chk' });
+        if (b.type === 'gallery') return F('Tata letak galeri', p + '.layout', { t: 'sel', o: [['masonry', 'Mosaik (rasio asli)'], ['strip', 'Geser horizontal']] }) + c + '<h3>Foto</h3><label class="filebtn">+ Unggah banyak foto sekaligus<input type="file" multiple accept="image/png,image/jpeg,image/webp" data-multi="' + p + '.photos" hidden></label>' +
+          list(p + '.photos', 'photo', 'Tambah satu foto', function (ph, q) { return F('Foto', q + '.src', { t: 'img', max: 1400 }) + F('Keterangan (opsional)', q + '.caption'); });
+        if (b.type === 'video') return F('URL video (YouTube / Vimeo / .mp4)', p + '.url') + F('Keterangan', p + '.caption') + c;
+        if (b.type === 'text') return F('Isi (**tebal**, *miring*, baris "- " untuk daftar)', p + '.body', { t: 'ta', r: 6 }) + c;
+        return F('Kutipan', p + '.text', { t: 'ta', r: 3 }) + F('Oleh', p + '.by') + c;
+      }
+      return '<h2>Media</h2><p class="note">Tambah galeri foto, video, teks, atau kutipan. Blok tampil di beranda setelah section link. Lebar "Setengah" membuat dua blok sejajar.</p>' +
+        a.map(function (b, i) { return item('blocks', i, a.length, b, fields(b, 'blocks.' + i)); }).join('') +
+        '<div class="row">' + [['b_gallery', '+ Galeri foto'], ['b_video', '+ Video'], ['b_text', '+ Teks'], ['b_quote', '+ Kutipan']].map(function (x) { return '<button data-a="add" data-l="blocks" data-k="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>';
+    },
     story: function () {
       return '<h2>Who am I</h2><p class="note">Tulis ceritamu dalam bab-bab. Pisahkan paragraf dengan satu baris kosong.</p>' + F('Tampilkan halaman & tautan di beranda', 'story.visible', { t: 'chk' }) + F('Judul halaman', 'story.heading') + F('Teks tombol di beranda', 'story.buttonLabel') + F('Pembuka', 'story.intro', { t: 'ta', r: 3 }) + F('Link CV (opsional)', 'story.cvUrl') +
-        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Foto latar bab (potret, opsional)', p + '.photo', { t: 'img', max: 1400 }) + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
+        '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + F('Foto bab (opsional, tampil apa adanya)', p + '.photo', { t: 'img', max: 1400 }) + F('Video bab (YouTube / Vimeo / .mp4, opsional)', p + '.video') + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
     },
     appearance: function () {
       var A = S.d.appearance;
       return '<h2>Tampilan</h2><div class="row">' + Object.keys(R.PRESETS).map(function (k) { return '<button data-a="preset" data-v="' + k + '"' + (A.preset === k ? ' aria-pressed="true"' : '') + '>' + k[0].toUpperCase() + k.slice(1) + '</button>'; }).join('') + '</div>' +
         F('Mode', 'appearance.mode', { t: 'sel', o: [['auto', 'Otomatis'], ['light', 'Terang'], ['dark', 'Gelap']] }) + F('Warna aksen', 'appearance.accent', { t: 'color' }) +
-        F('Font', 'appearance.font', { t: 'sel', o: [['sans', 'Sans-serif'], ['serif', 'Serif (judul)'], ['mono', 'Monospace']] }) + F('Border radius', 'appearance.radius', { t: 'range', x: 'min="0" max="28"' }) +
-        F('Gaya tombol', 'appearance.button', { t: 'sel', o: [['outline', 'Outline'], ['solid', 'Solid']] }) + F('Gaya kartu', 'appearance.card', { t: 'sel', o: [['flat', 'Flat'], ['raised', 'Bayangan halus']] }) +
+        F('Font', 'appearance.font', { t: 'sel', o: [['sans', 'Sans-serif (Inter)'], ['grotesk', 'Grotesk (Space Grotesk)'], ['serif', 'Serif (judul Playfair)'], ['display', 'Display (judul DM Serif)'], ['mono', 'Monospace']] }) + F('Border radius', 'appearance.radius', { t: 'range', x: 'min="0" max="28"' }) +
+        F('Palet warna', 'appearance.palette', { t: 'sel', o: [['default', 'Netral'], ['sand', 'Pasir'], ['midnight', 'Tengah malam'], ['sage', 'Sage'], ['rose', 'Rose'], ['mono', 'Monokrom']] }) + F('Layout link', 'appearance.linkLayout', { t: 'sel', o: [['bento', 'Bento (tile berbeda ukuran)'], ['grid', 'Kartu'], ['list', 'Daftar editorial'], ['auto', 'Ikuti pengaturan tiap section']] }) + F('Gaya hero', 'appearance.heroStyle', { t: 'sel', o: [['split', 'Teks + foto berdampingan'], ['centered', 'Tengah'], ['overlay', 'Foto sebagai latar']] }) + F('Bentuk foto', 'appearance.shape', { t: 'sel', o: [['rounded', 'Membulat'], ['arch', 'Lengkung (arch)'], ['oval', 'Oval'], ['square', 'Kotak']] }) + F('Animasi', 'appearance.motion', { t: 'sel', o: [['full', 'Penuh'], ['subtle', 'Halus'], ['off', 'Mati']] }) + F('Gaya tombol', 'appearance.button', { t: 'sel', o: [['outline', 'Outline'], ['solid', 'Solid']] }) + F('Gaya kartu', 'appearance.card', { t: 'sel', o: [['flat', 'Flat'], ['raised', 'Bayangan halus']] }) +
         F('Layout profil', 'appearance.align', { t: 'sel', o: [['left', 'Kiri'], ['center', 'Tengah']] });
     },
     settings: function () {
@@ -149,7 +172,7 @@
 
   // ---------- actions ----------
   function move(l, f, t) { var a = get(S.d, l); if (t < 0 || t >= a.length || f === t) return; a.splice(t, 0, a.splice(f, 1)[0]); changed(true); }
-  function reid(x) { x.id = uid(); (x.links || []).forEach(reid); }
+  function reid(x) { x.id = uid(); (x.links || []).forEach(reid); (x.photos || []).forEach(reid); }
   function saveDraft() {
     var e = validate(); if (e.length) return say(e.join(' · '), 'err');
     try { localStorage.setItem(K.draft, JSON.stringify(S.d)); } catch (x) { return say('Penyimpanan lokal penuh. Gunakan gambar yang lebih kecil.', 'err'); }
@@ -166,7 +189,7 @@
     } catch (e) { S.conn = false; say(e.message, 'err'); }
   }
   async function uploadImages(c, d) {
-    var slots = [[d.profile, 'avatar'], [d.profile, 'cover']].concat(d.projects.map(function (p) { return [p, 'thumb']; }), d.sections.reduce(function (a, s) { return a.concat(s.links.map(function (l) { return [l, 'thumb']; })); }, []), d.story.chapters.map(function (c) { return [c, 'photo']; }));
+    var slots = [[d.profile, 'avatar'], [d.profile, 'cover']].concat(d.projects.map(function (p) { return [p, 'thumb']; }), d.sections.reduce(function (a, s) { return a.concat(s.links.map(function (l) { return [l, 'thumb']; })); }, []), d.story.chapters.map(function (c) { return [c, 'photo']; }), d.blocks.reduce(function (a, b) { return a.concat(b.photos || []); }, []).map(function (p) { return [p, 'src']; }));
     for (var i = 0; i < slots.length; i++) {
       var o = slots[i][0], k = slots[i][1], m = /^data:image\/(\w+);base64,(.+)$/.exec(o[k] || '');
       if (m) { var path = 'assets/images/' + uid() + '.' + (m[1] === 'jpeg' ? 'jpg' : m[1]); await GH.put(c, path, m[2], 'Upload gambar via dashboard'); o[k] = path; }
@@ -188,7 +211,7 @@
   function shrink(f, max) {
     return new Promise(function (ok, no) {
       var u = URL.createObjectURL(f), im = new Image();
-      im.onload = function () { var k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u); ok(c.toDataURL('image/webp', 0.82)); };
+      im.onload = function () { var k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u); ok(c.toDataURL('image/webp', 0.86)); };
       im.onerror = no; im.src = u;
     });
   }
@@ -207,6 +230,14 @@
       if (!/^image\/(png|jpeg|webp)$/.test(f.type)) return say('Format harus PNG, JPG, atau WebP.', 'err');
       if (f.size > 5 * 1024 * 1024) return say('Ukuran file maksimal 5 MB.', 'err');
       try { set(S.d, t.dataset.img, await shrink(f, +t.dataset.max)); changed(true); } catch (x) { say('Gambar tidak dapat diproses.', 'err'); }
+    } else if (t.dataset && t.dataset.multi) {
+      var arr = get(S.d, t.dataset.multi), fs = [].slice.call(t.files), bad = 0;
+      for (var i = 0; i < fs.length; i++) {
+        var f2 = fs[i];
+        if (!/^image\/(png|jpeg|webp)$/.test(f2.type) || f2.size > 5 * 1024 * 1024) { bad++; continue; }
+        try { arr.push({ id: uid(), src: await shrink(f2, 1400), caption: '' }); } catch (x) { bad++; }
+      }
+      changed(true); say(bad ? bad + ' file dilewati (harus PNG/JPG/WebP, maks 5 MB).' : fs.length + ' foto ditambahkan.', bad ? 'err' : 'ok');
     } else if (t.id === 'imp' && t.files[0]) {
       try { var j = JSON.parse(await t.files[0].text()); if (!j || typeof j.profile !== 'object') throw 0; S.d = norm(j); changed(true); say('Konfigurasi diimpor sebagai draft.', 'ok'); } catch (x) { say('File JSON tidak valid.', 'err'); }
     }

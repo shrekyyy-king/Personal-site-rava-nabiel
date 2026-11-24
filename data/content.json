@@ -105,14 +105,19 @@
     "linkedin": ""
   },
   "appearance": {
-    "mode": "auto",
+    "mode": "light",
     "preset": "elegant",
     "accent": "#8a6d3b",
     "font": "serif",
-    "radius": 9,
+    "radius": 12,
     "button": "outline",
     "card": "flat",
-    "align": "center"
+    "align": "center",
+    "palette": "sand",
+    "linkLayout": "bento",
+    "heroStyle": "split",
+    "shape": "rounded",
+    "motion": "full"
   },
   "footer": "© Mr. Boss",
   "story": {
@@ -139,5 +144,6 @@
         "visible": true
       }
     ]
-  }
+  },
+  "blocks": []
 }

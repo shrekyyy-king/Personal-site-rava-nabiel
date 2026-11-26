@@ -40,3 +40,5 @@ label.chk{font-weight:400;display:flex;gap:.5rem;align-items:center}
 .toast.err{background:#b91c1c}.toast.ok{background:#15803d}
 
 #pv .wrap>*{animation:none!important}
+.upf{margin:.2rem 0 .8rem;padding:.5rem .7rem;border:1px dashed #d6d3d1;border-radius:6px;background:#fafaf9}
+#pv .nb{position:sticky}

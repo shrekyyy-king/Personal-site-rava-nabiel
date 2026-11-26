@@ -7,6 +7,7 @@
       if (st.visible !== true) { app.textContent = 'Halaman ini belum tersedia.'; return; }
       R.renderStory(app, d);
       document.title = (st.heading || 'Siapa saya') + ' · ' + ((d.profile || {}).name || '');
+      if (window.Music) Music.init(d);
     })
     .catch(function () { app.textContent = 'Konten tidak dapat dimuat.'; });
 })();

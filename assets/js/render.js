@@ -192,5 +192,100 @@
     var items = ch.map(function (c, i) { return [c.title ? String(c.title).trim() : 'Bab ' + (i + 1), '#bab-' + (i + 1)]; });
     root.innerHTML = nav(d, items, pv, dark) + top + chs + tail;
   }
-  w.R = { render: render, renderStory: renderStory, theme: theme, nav: nav, esc: esc, url: url, fixUrl: fix, img: img, video: video, music: music, PRESETS: PRESETS, ICONS: ICONS };
+  var PF_CATS = [
+    ['all', 'Semua'],
+    ['research', 'Akademik & Riset'],
+    ['community', 'Pengabdian & Lapangan'],
+    ['leadership', 'Organisasi & Kepemimpinan']
+  ];
+  var PF_MAP = { research: 'Akademik & Riset', community: 'Pengabdian & Lapangan', leadership: 'Organisasi & Kepemimpinan' };
+  function pfArr(v, sep) { return Array.isArray(v) ? v : String(v || '').split(sep).map(function (x) { return x.trim(); }).filter(Boolean); }
+  function renderPortfolio(root, d, pv) {
+    var pf = d.academicPortfolio || {}, p = d.profile || {}, dark = theme(root, d.appearance, pv);
+    var items = Array.isArray(pf.items) ? pf.items.filter(V) : [];
+    var navLinks = pv ? [['Beranda', '#'], ['Portofolio', '#pf-grid']] : [['Beranda', './'], ['Portofolio', '#pf-grid']];
+    if (d.story && d.story.visible === true) navLinks.push([d.story.buttonLabel || 'Siapa saya', pv ? '#' : 'whoami.html']);
+    var evCount = items.reduce(function (acc, it) { return acc + ((it.evidence && it.evidence.length) || 0); }, 0);
+    var head = '<div class="wrap story stop pf-head">' + (pv ? '' : '<a class="back" href="./">← Beranda</a>') +
+      '<header class="sh"><small>' + esc(p.name || '') + (p.title ? ' · ' + esc(p.title) : '') + '</small>' +
+      '<h1>' + esc(pf.title || 'Portofolio Akademik') + '</h1>' +
+      (pf.subtitle ? '<p class="lead">' + esc(pf.subtitle) + '</p>' : '') +
+      '<div class="pf-stats"><span><b>' + items.length + '</b> Karya &amp; Pengalaman</span><span><b>3</b> Kategori</span><span><b>' + evCount + '</b> Bukti Terlampir</span></div></header></div>';
+    var bar = '<section class="wrap pf-wrap"><div class="pf-bar" role="region" aria-label="Filter portofolio"><div class="pf-tabs" role="tablist">' +
+      PF_CATS.map(function (c, idx) {
+        var cnt = c[0] === 'all' ? items.length : items.filter(function (x) { return x.category === c[0]; }).length;
+        return '<button type="button" class="pf-tab' + (idx === 0 ? ' on' : '') + '" data-cat="' + c[0] + '" aria-pressed="' + (idx === 0 ? 'true' : 'false') + '">' + c[1] + ' <em>' + cnt + '</em></button>';
+      }).join('') + '</div><div class="pf-tools">' +
+      '<input type="search" class="pf-q" placeholder="Cari topik, peran, atau tag..." aria-label="Cari portofolio">' +
+      '<div class="pf-views" role="group" aria-label="Mode tampilan"><button type="button" class="pf-v on" data-view="grid" aria-pressed="true">Kartu</button><button type="button" class="pf-v" data-view="timeline" aria-pressed="false">Linimasa</button></div>' +
+      '</div></div><div id="pf-grid" class="pf-list"></div><footer>' + esc(d.footer || '') + '</footer></section>';
+    root.innerHTML = nav(d, navLinks, pv, dark) + head + bar;
+
+    var st = { cat: 'all', view: 'grid', q: '' }, grid = root.querySelector('#pf-grid'), modal = null;
+    function list() {
+      var q = st.q.trim().toLowerCase();
+      return items.filter(function (it) {
+        if (st.cat !== 'all' && it.category !== st.cat) return false;
+        if (!q) return true;
+        var hay = [it.title, it.role, it.summary, PF_MAP[it.category] || '', it.period].concat(pfArr(it.tags, ',')).concat(pfArr(it.details, /\n/)).join(' ').toLowerCase();
+        return hay.indexOf(q) !== -1;
+      });
+    }
+    function draw() {
+      var arr = list();
+      if (!arr.length) { grid.className = 'pf-list'; grid.innerHTML = '<div class="pf-empty">Belum ada item portofolio yang cocok.</div>'; return; }
+      if (st.view === 'timeline') {
+        grid.className = 'pf-list tl';
+        grid.innerHTML = arr.map(function (it, i) {
+          var evN = (it.evidence && it.evidence.length) || 0;
+          return '<li class="tl-i rv in" style="--i:' + Math.min(i, 6) + '"><span class="tl-p">' + esc(it.period || '') + ' · ' + esc(PF_MAP[it.category] || '') + '</span>' +
+            '<button type="button" class="pf-tl-btn" data-id="' + esc(it.id) + '"><b>' + esc(it.title) + '</b>' + (it.role ? '<small>' + esc(it.role) + '</small>' : '') +
+            '<p>' + esc(it.summary) + '</p><span class="pf-more">' + (evN ? evN + ' bukti terlampir · ' : '') + 'Lihat detail →</span></button></li>';
+        }).join('');
+        return;
+      }
+      grid.className = 'pf-list pf-grid';
+      grid.innerHTML = arr.map(function (it) {
+        var ev = it.evidence || [], thumb = ev.find(function (e) { return e && e.type === 'image' && img(e.src); }), tags = pfArr(it.tags, ',');
+        return '<button type="button" class="pf-card" data-id="' + esc(it.id) + '">' +
+          (thumb ? '<div class="pf-thumb"><img src="' + esc(img(thumb.src)) + '" alt="" loading="lazy"></div>' : '') +
+          '<div class="pf-cb"><div class="pf-meta"><span class="pf-cat">' + esc(PF_MAP[it.category] || '') + '</span><span class="pf-per">' + esc(it.period || '') + '</span></div>' +
+          '<h3>' + esc(it.title) + '</h3>' + (it.role ? '<small class="pf-role">' + esc(it.role) + '</small>' : '') +
+          '<p>' + esc(it.summary) + '</p>' + (tags.length ? '<div class="pf-tags">' + tags.slice(0, 4).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+          '<div class="pf-foot"><span>' + (ev.length ? '📎 ' + ev.length + ' Bukti' : '📂 Siap diisi bukti') + '</span><em>Detail ↗</em></div></div></button>';
+      }).join('');
+    }
+    function closeM() { if (modal) { modal.remove(); modal = null; document.removeEventListener('keydown', onEsc); } }
+    function onEsc(e) { if (e.key === 'Escape') closeM(); }
+    function openM(id) {
+      var it = items.find(function (x) { return x.id === id; }); if (!it) return;
+      closeM();
+      var ev = it.evidence || [], det = pfArr(it.details, /\n/), tags = pfArr(it.tags, ',');
+      var evH = ev.length ? ev.map(function (e) {
+        if (e.type === 'image' && img(e.src)) return '<figure class="pf-ev-img"><img src="' + esc(img(e.src)) + '" alt="' + esc(e.label || it.title) + '">' + (e.label ? '<figcaption>' + esc(e.label) + '</figcaption>' : '') + '</figure>';
+        if (e.url) return '<a class="btn" href="' + esc(url(e.url)) + '" target="_blank" rel="noopener noreferrer"><span class="ic" aria-hidden="true">' + ICONS.doc + '</span><span class="tx"><b>' + esc(e.label || 'Lihat Bukti') + '</b>' + (e.note ? '<small>' + esc(e.note) + '</small>' : '') + '</span></a>';
+        return '';
+      }).join('') : '<p class="pf-ev-empty">Belum ada bukti terlampir. Tambahkan melalui Dashboard → tab Portofolio.</p>';
+      modal = document.createElement('div'); modal.className = 'pf-mod'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-label', it.title);
+      modal.innerHTML = '<div class="pf-mod-box"><button type="button" class="pf-mod-x" aria-label="Tutup detail">✕</button>' +
+        '<div class="pf-meta"><span class="pf-cat">' + esc(PF_MAP[it.category] || '') + '</span><span class="pf-per">' + esc(it.period || '') + '</span></div>' +
+        '<h2>' + esc(it.title) + '</h2>' + (it.role ? '<p class="pf-role">' + esc(it.role) + '</p>' : '') + '<p class="pf-sum">' + esc(it.summary) + '</p>' +
+        (det.length ? '<ul class="pf-det">' + det.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+        (tags.length ? '<div class="pf-tags">' + tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+        '<div class="pf-ev"><h3>Bukti &amp; Dokumentasi</h3>' + evH + '</div></div>';
+      modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('.pf-mod-x')) closeM(); });
+      document.addEventListener('keydown', onEsc); document.body.appendChild(modal); modal.querySelector('.pf-mod-x').focus();
+    }
+    root.onclick = function (e) {
+      var tab = e.target.closest('.pf-tab');
+      if (tab) { st.cat = tab.dataset.cat; root.querySelectorAll('.pf-tab').forEach(function (b) { var on = b === tab; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); draw(); return; }
+      var vw = e.target.closest('.pf-v');
+      if (vw) { st.view = vw.dataset.view; root.querySelectorAll('.pf-v').forEach(function (b) { var on = b === vw; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); draw(); return; }
+      var card = e.target.closest('.pf-card, .pf-tl-btn');
+      if (card) openM(card.dataset.id);
+    };
+    var qi = root.querySelector('.pf-q'); if (qi) qi.oninput = function () { st.q = qi.value; draw(); };
+    draw();
+  }
+  w.R = { render: render, renderStory: renderStory, renderPortfolio: renderPortfolio, theme: theme, nav: nav, esc: esc, url: url, fixUrl: fix, img: img, video: video, music: music, PRESETS: PRESETS, ICONS: ICONS };
 })(window);

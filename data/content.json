@@ -47,7 +47,7 @@
         {
           "id": "l1",
           "title": "Curriculum Vitae",
-          "description": "Ganti URL dengan tautan CV Anda",
+          "description": "Dokumen Curriculum Vitae terbaru",
           "url": "https://drive.google.com/file/d/18TO_qudp9X8gOKBWxq-lBsUwISaSeGDz/view?usp=sharing",
           "icon": "doc",
           "visible": true,
@@ -56,7 +56,7 @@
         {
           "id": "l2",
           "title": "Portofolio Akademik",
-          "description": "Ganti URL dengan tautan portofolio Anda",
+          "description": "Kumpulan karya & pengalaman akademik",
           "url": "#",
           "icon": "star",
           "visible": true
@@ -126,7 +126,7 @@
   "footer": "© Mr. Boss",
   "story": {
     "visible": true,
-    "heading": "Who Am I?  ",
+    "heading": "Who Am I?",
     "buttonLabel": "Siapa saya",
     "intro": "",
     "cvUrl": "",
@@ -147,7 +147,7 @@
       },
       {
         "id": "rgjyq04",
-        "title": " Sarjana Psikologi UMS",
+        "title": "Sarjana Psikologi UMS",
         "body": "Saya memulai perjalanan akademik sebagai mahasiswa Psikologi Universitas Muhammadiyah Surakarta pada tahun 2023. Ketertarikan saya terhadap psikologi berawal dari keinginan untuk memahami bagaimana manusia berpikir, bagaimana ketakutan dan pikiran negatif terbentuk, serta bagaimana seseorang dapat dibantu untuk memahami dan mengelola pola pikirnya.\n\nSeiring berjalannya waktu, ketertarikan tersebut semakin berkembang, khususnya pada bidang psikologi klinis. Bagi saya, mempelajari psikologi bukan hanya tentang memahami teori dan konsep mengenai manusia, tetapi juga tentang bagaimana menerapkannya dalam kehidupan nyata.\n\nSalah satu pengalaman yang cukup berkesan adalah ketika terjun langsung ke lingkungan sekolah. Berhadapan dengan anak-anak yang memiliki karakter, latar belakang, dan cara berperilaku yang beragam memberikan perspektif baru bagi saya. Melalui observasi dan kegiatan psikoedukasi, saya belajar bahwa memahami manusia membutuhkan pendekatan yang lebih dari sekadar penguasaan teori.\n\nAda seni tersendiri dalam memasuki dunia seseorang. Kita tidak bisa serta-merta memahami mereka hanya dengan membawa teori yang telah dipelajari. Dibutuhkan kemampuan untuk menyesuaikan diri, membangun kedekatan, memahami perspektif, dan melihat situasi dari sudut pandang orang lain.\n\nSelain pengalaman lapangan, perjalanan akademik saya juga diwarnai dengan berbagai pengalaman praktis dan kegiatan pengabdian masyarakat. Saya pernah terlibat dalam kegiatan pengabdian kepada guru-guru SD Muhammadiyah dan Aisyiyah di Klaten, yang semakin memperluas pengalaman saya dalam berinteraksi dengan masyarakat.\n\nSaat ini, saya sedang mengerjakan penelitian skripsi berjudul \"Validasi Instrumen SERVQUAL Dimensi Empathy untuk Mengukur Kualitas Layanan Akademik Universitas Muhammadiyah Surakarta\". Penelitian ini berfokus pada validasi instrumen untuk mengukur dimensi empati dalam kualitas layanan akademik.\n\nSelama menjalani proses perkuliahan, saya juga menyadari bahwa memahami manusia berarti bersedia menerima berbagai perspektif. Kebenaran dan kesalahan tidak selalu dapat dilihat secara absolut, karena sering kali terdapat konteks dan sudut pandang berbeda yang perlu dipahami sebelum menarik kesimpulan.\n\nSaya ingin terus mengembangkan diri menjadi pribadi yang analitis dalam berpikir, tetapi tetap humanis dalam memahami manusia. Setelah menyelesaikan pendidikan sarjana, saya memiliki rencana untuk melanjutkan ke Pendidikan Profesi Psikolog sebagai langkah berikutnya dalam perjalanan profesional saya.",
         "quote": "",
         "visible": true,

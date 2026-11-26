@@ -133,7 +133,9 @@
     (d.sections || []).filter(V).forEach(function (sc) {
       var ls = (sc.links || []).filter(V); if (!ls.length) return;
       var lay = a.linkLayout && a.linkLayout !== 'auto' ? a.linkLayout : (a.linkLayout === 'auto' ? (sc.layout || 'bento') : 'bento');
-      h += blk(sc.title, '<div class="links ' + (lay === 'list' ? '' : lay) + '">' + ls.map(function (l) {
+      var hasSized = ls.some(function (l) { return l.size === 'l' || l.size === 'w'; });
+      var bCls = lay === 'bento' && !hasSized && ls.length <= 3 ? ' bento-' + ls.length : '';
+      h += blk(sc.title, '<div class="links ' + (lay === 'list' ? '' : lay + bCls) + '">' + ls.map(function (l) {
         var th = img(l.thumb), b = lay === 'bento', sz = b ? ' sz-' + (l.size === 'l' || l.size === 'w' ? l.size : 's') : '';
         return L(l.url, 'btn' + sz + (th && b ? ' has-img' : ''), (th ? '<img class="' + (b ? 'tbg' : 'th') + '" src="' + esc(th) + '" alt="" loading="lazy">' : '<span class="ic" aria-hidden="true">' + (ICONS[l.icon] || ICONS.link) + '</span>') +
           '<span class="tx"><b>' + esc(l.title) + '</b>' + (l.description ? '<small>' + esc(l.description) + '</small>' : '') + '</span>' + (l.badge ? '<em class="badge">' + esc(l.badge) + '</em>' : ''));
@@ -150,19 +152,23 @@
       if (inner) h += blk(b.title, inner, b.width);
     });
     var ab = d.about || {}, sk = String(ab.skills || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean);
-    if (V(ab) && (ab.intro || ab.education || ab.interests || sk.length)) {
-      h += blk('Tentang saya', '<div class="about">' + (ab.intro ? '<p>' + esc(ab.intro) + '</p>' : '') + (ab.education ? '<p><b>Pendidikan</b><br>' + esc(ab.education) + '</p>' : '') +
-        (ab.interests ? '<p><b>Minat</b><br>' + esc(ab.interests) + '</p>' : '') + (sk.length ? '<div class="chips">' + sk.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : '') + '</div>', 'half');
-    }
+    var abOn = V(ab) && !!(ab.intro || ab.education || ab.interests || sk.length);
     var c = d.contact || {}, ct = [];
     if (c.email) ct.push(['Email', 'mailto:' + c.email]);
     if (c.whatsapp) ct.push(['WhatsApp', 'https://wa.me/' + String(c.whatsapp).replace(/\D/g, '')]);
     if (c.linkedin) ct.push(['LinkedIn', c.linkedin]);
-    if (V(c) && ct.length) h += blk('Kontak', '<div class="links">' + ct.map(function (x) { return L(x[1], 'btn', '<span class="ic" aria-hidden="true">' + ICONS.mail + '</span><span class="tx"><b>' + x[0] + '</b></span>'); }).join('') + '</div>', 'half');
+    var ctOn = V(c) && ct.length > 0;
+    var pairW = (abOn && ctOn) ? 'half' : '';
+    if (abOn) {
+      h += blk('Tentang saya', '<div class="about">' + (ab.intro ? '<p>' + esc(ab.intro) + '</p>' : '') + (ab.education ? '<p><b>Pendidikan</b><br>' + esc(ab.education) + '</p>' : '') +
+        (ab.interests ? '<p><b>Minat</b><br>' + esc(ab.interests) + '</p>' : '') + (sk.length ? '<div class="chips">' + sk.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : '') + '</div>', pairW);
+    }
+    if (ctOn) h += blk('Kontak', '<div class="links">' + ct.map(function (x) { return L(x[1], 'btn', '<span class="ic" aria-hidden="true">' + ICONS.mail + '</span><span class="tx"><b>' + x[0] + '</b></span>'); }).join('') + '</div>', pairW);
     var pr = (d.projects || []).filter(V);
     if (pr.length) {
-      h += blk('Proyek', '<div class="projects">' + pr.map(function (x) {
-        var t = (img(x.thumb) ? '<img src="' + esc(img(x.thumb)) + '" alt="" loading="lazy">' : '') + '<div><b>' + esc(x.title) + '</b>' + ((x.category || x.date) ? '<small>' + esc([x.category, x.date].filter(Boolean).join(' · ')) + '</small>' : '') + (x.description ? '<p>' + esc(x.description) + '</p>' : '') + '</div>';
+      h += blk('Proyek', '<div class="projects' + (pr.length === 1 ? ' single' : '') + '">' + pr.map(function (x) {
+        var th = img(x.thumb);
+        var t = (th ? '<img src="' + esc(th) + '" alt="" loading="lazy">' : '<div class="proj-bar" aria-hidden="true"><span>' + ICONS.dot + '</span></div>') + '<div><b>' + esc(x.title) + '</b>' + ((x.category || x.date) ? '<small>' + esc([x.category, x.date].filter(Boolean).join(' · ')) + '</small>' : '') + (x.description ? '<p>' + esc(x.description) + '</p>' : '') + '</div>';
         return x.url ? L(x.url, 'proj', t) : '<div class="proj">' + t + '</div>';
       }).join('') + '</div>');
     }
@@ -172,11 +178,14 @@
   function renderStory(root, d, pv) {
     var st = d.story || {}, p = d.profile || {}, dark = theme(root, d.appearance, pv);
     var ch = (st.chapters || []).filter(V);
-    var top = '<div class="wrap story stop">' + (pv ? '' : '<a class="back" href="./">← Beranda</a>') + '<header class="sh"><small>' + esc(p.name) + '</small><h1>' + esc(st.heading || 'Siapa saya') + '</h1>' + (st.intro ? '<p class="lead">' + esc(st.intro) + '</p>' : '') + '</header></div>';
+    var heading = String(st.heading || 'Siapa saya').trim() || 'Siapa saya';
+    var top = '<div class="wrap story stop">' + (pv ? '' : '<a class="back" href="./">← Beranda</a>') + '<header class="sh"><small>' + esc(p.name) + '</small><h1>' + esc(heading) + '</h1>' + (st.intro ? '<p class="lead">' + esc(st.intro) + '</p>' : '') + '</header></div>';
     var chs = ch.map(function (c, i) {
-      var pc = pics(c, pv), vd = video(c.video);
+      var pc = pics(c, pv), vd = video(c.video), ttl = String(c.title || '').trim();
+      var wc = String(c.body || '').trim().split(/\s+/).filter(Boolean).length;
+      var mins = wc ? Math.max(1, Math.round(wc / 180)) : 0;
       return '<section id="bab-' + (i + 1) + '" class="chap rv' + (pc ? ' ph' : '') + '">' + pc +
-        '<div class="ci"><span class="num">' + nn(i + 1) + '</span><h2>' + esc(c.title) + '</h2>' + paras(c.body) + (vd ? '<div class="cv">' + vd + '</div>' : '') + (c.quote ? '<blockquote>' + esc(c.quote) + '</blockquote>' : '') + '</div></section>';
+        '<div class="ci"><div class="chap-top"><span class="num">' + nn(i + 1) + '</span>' + (mins ? '<span class="chap-meta">' + mins + ' mnt baca</span>' : '') + '</div><h2>' + esc(ttl) + '</h2>' + paras(c.body) + (vd ? '<div class="cv">' + vd + '</div>' : '') + (c.quote ? '<blockquote>' + esc(c.quote) + '</blockquote>' : '') + '</div></section>';
     }).join('');
     var tail = '<div class="wrap story">' + (!ch.length && !st.intro ? '<p>Cerita belum ditulis.</p>' : '') +
       (st.cvUrl ? '<div class="links">' + L(st.cvUrl, 'btn', '<span class="ic" aria-hidden="true">' + ICONS.doc + '</span><span class="tx"><b>Lihat CV</b></span>') + '</div>' : '') + '<footer>' + esc(d.footer || '') + '</footer></div>';

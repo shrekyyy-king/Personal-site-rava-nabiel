@@ -8,6 +8,7 @@
     "title": "Psychology Student | Universitas Muhammadiyah Surakarta",
     "bio": "A personal space for my academic journey, professional development, projects, and interests.",
     "tagline": "",
+    "taglines": "",
     "location": "",
     "status": "",
     "avatar": "assets/images/hxsczvj.webp",
@@ -24,7 +25,7 @@
     {
       "id": "s2",
       "title": "LinkedIn",
-      "url": "www.linkedin.com/in/muhammad-rava-nabiel-079a95373",
+      "url": "https://www.linkedin.com/in/muhammad-rava-nabiel-079a95373",
       "description": "",
       "visible": true
     },
@@ -117,7 +118,10 @@
     "linkLayout": "bento",
     "heroStyle": "split",
     "shape": "rounded",
-    "motion": "full"
+    "motion": "full",
+    "nav": "on",
+    "progress": "on",
+    "themeToggle": "on"
   },
   "footer": "© Mr. Boss",
   "story": {
@@ -133,17 +137,35 @@
         "body": "Perjalanan organisasi saya dimulai pada tahun 2024 ketika bergabung dengan Dewan Perwakilan Mahasiswa Fakultas Psikologi Universitas Muhammadiyah Surakarta (DPM F Psikologi UMS). Awalnya, saya bergabung hanya karena rasa ingin mencoba sesuatu yang baru. Namun, ada satu prinsip yang sejak awal saya pegang: saya harus selalu aktif dan terus mengeksplorasi hal-hal baru.\n\nPada tahun 2024, saya menjalankan peran sebagai Anggota Komisi I dan Badan Legislasi. Dalam periode ini, saya mulai mengenal lebih dekat bagaimana organisasi mahasiswa bekerja, khususnya dalam menyampaikan aspirasi dan mengadvokasikan berbagai permasalahan mahasiswa kepada pihak terkait. Salah satu fokus yang menjadi perhatian adalah persoalan sarana dan prasarana fakultas.\n\nMemasuki tahun 2025, saya mendapatkan tanggung jawab yang lebih besar sebagai Ketua Komisi Ad-Hoc Transformasi Digitalisasi dan Inovasi (TDI), sekaligus tetap menjadi bagian dari Komisi I. Fokus saya mulai berkembang pada pengembangan organisasi, mengidentifikasi kesenjangan dalam sistem kerja, mencari ruang perbaikan, serta mendorong inovasi dan penguatan branding DPM melalui konten digital.\n\nPada periode 2025, saya juga mendapatkan pengalaman menjadi moderator dalam audiensi yang membahas berbagai permasalahan di lingkungan fakultas. Pengalaman tersebut memberikan kesempatan bagi saya untuk belajar memfasilitasi diskusi, mengelola perbedaan pandangan, dan menjaga agar aspirasi dapat tersampaikan secara konstruktif.\n\nPada tahun 2026, saya dipercaya menjadi Wakil Ketua SPL (Sosial, Pendidikan, dan Legislasi). Dalam posisi ini, saya memiliki tanggung jawab untuk mengoordinasikan dan mengawasi Komisi II serta Badan Legislasi. Peran tersebut tidak hanya menuntut saya untuk memastikan setiap bidang berjalan sesuai arah dan target organisasi, tetapi juga menjaga sisi kemanusiaan dalam prosesnya. Bagi saya, organisasi tidak seharusnya hanya berorientasi pada performa dan pencapaian program, tetapi juga harus memperhatikan orang-orang yang berada di dalamnya.\n\nSalah satu pengalaman yang cukup berkesan adalah keterlibatan dalam membantu mahasiswa menghadapi persoalan Kartu Rencana Studi (KRS). Melalui penyebaran informasi, pendampingan, pengarahan, diskusi, serta koordinasi dengan pihak program studi, saya berupaya membantu mahasiswa menemukan solusi atas permasalahan yang dihadapi.\n\nTentu, perjalanan ini tidak selalu berjalan mudah. Ada masa ketika tanggung jawab terasa melelahkan, bahkan membuat saya terlalu berfokus pada kepentingan dan sudut pandang sendiri. Dari dinamika tersebut, saya belajar bahwa kepemimpinan bukan hanya tentang mengarahkan orang lain, melainkan juga tentang mengelola ego, mendengarkan, dan memahami bahwa setiap individu memiliki kondisi serta perspektif yang berbeda.\n\nDari seluruh perjalanan ini, saya membangun pemahaman bahwa sebuah organisasi harus mampu menjadi ruang bagi setiap gagasan dan suara. Sekecil apa pun sebuah gagasan, tetaplah sebuah gagasan. Siapa pun yang bersuara, tetaplah sebuah suara yang layak didengar.\n\nSaya ingin membawa nilai aktif, kreatif, solutif, dan humanis dalam setiap ruang yang saya tempati. Sebab, bagi saya, organisasi bukan sekadar tempat menjalankan program atau menduduki jabatan, melainkan ruang untuk belajar, bertumbuh, menyelesaikan persoalan, dan yang terpenting, lebih memanusiakan manusia.",
         "quote": "",
         "visible": true,
-        "photo": "assets/images/32tn9gx.webp"
+        "photos": [
+          {
+            "id": "iwvegwa",
+            "src": "assets/images/32tn9gx.webp",
+            "caption": ""
+          }
+        ]
       },
       {
         "id": "rgjyq04",
         "title": " Sarjana Psikologi UMS",
         "body": "Saya memulai perjalanan akademik sebagai mahasiswa Psikologi Universitas Muhammadiyah Surakarta pada tahun 2023. Ketertarikan saya terhadap psikologi berawal dari keinginan untuk memahami bagaimana manusia berpikir, bagaimana ketakutan dan pikiran negatif terbentuk, serta bagaimana seseorang dapat dibantu untuk memahami dan mengelola pola pikirnya.\n\nSeiring berjalannya waktu, ketertarikan tersebut semakin berkembang, khususnya pada bidang psikologi klinis. Bagi saya, mempelajari psikologi bukan hanya tentang memahami teori dan konsep mengenai manusia, tetapi juga tentang bagaimana menerapkannya dalam kehidupan nyata.\n\nSalah satu pengalaman yang cukup berkesan adalah ketika terjun langsung ke lingkungan sekolah. Berhadapan dengan anak-anak yang memiliki karakter, latar belakang, dan cara berperilaku yang beragam memberikan perspektif baru bagi saya. Melalui observasi dan kegiatan psikoedukasi, saya belajar bahwa memahami manusia membutuhkan pendekatan yang lebih dari sekadar penguasaan teori.\n\nAda seni tersendiri dalam memasuki dunia seseorang. Kita tidak bisa serta-merta memahami mereka hanya dengan membawa teori yang telah dipelajari. Dibutuhkan kemampuan untuk menyesuaikan diri, membangun kedekatan, memahami perspektif, dan melihat situasi dari sudut pandang orang lain.\n\nSelain pengalaman lapangan, perjalanan akademik saya juga diwarnai dengan berbagai pengalaman praktis dan kegiatan pengabdian masyarakat. Saya pernah terlibat dalam kegiatan pengabdian kepada guru-guru SD Muhammadiyah dan Aisyiyah di Klaten, yang semakin memperluas pengalaman saya dalam berinteraksi dengan masyarakat.\n\nSaat ini, saya sedang mengerjakan penelitian skripsi berjudul \"Validasi Instrumen SERVQUAL Dimensi Empathy untuk Mengukur Kualitas Layanan Akademik Universitas Muhammadiyah Surakarta\". Penelitian ini berfokus pada validasi instrumen untuk mengukur dimensi empati dalam kualitas layanan akademik.\n\nSelama menjalani proses perkuliahan, saya juga menyadari bahwa memahami manusia berarti bersedia menerima berbagai perspektif. Kebenaran dan kesalahan tidak selalu dapat dilihat secara absolut, karena sering kali terdapat konteks dan sudut pandang berbeda yang perlu dipahami sebelum menarik kesimpulan.\n\nSaya ingin terus mengembangkan diri menjadi pribadi yang analitis dalam berpikir, tetapi tetap humanis dalam memahami manusia. Setelah menyelesaikan pendidikan sarjana, saya memiliki rencana untuk melanjutkan ke Pendidikan Profesi Psikolog sebagai langkah berikutnya dalam perjalanan profesional saya.",
         "quote": "",
-        "photo": "assets/images/ga4eo8o.webp",
-        "visible": true
+        "visible": true,
+        "photos": [
+          {
+            "id": "60fgds9",
+            "src": "assets/images/ga4eo8o.webp",
+            "caption": ""
+          }
+        ]
       }
     ]
   },
-  "blocks": []
+  "blocks": [],
+  "music": {
+    "visible": true,
+    "url": "https://youtu.be/Km258d1UW9E?si=WYrSChXnrGIcFNfG",
+    "title": "",
+    "autoplay": true
+  }
 }

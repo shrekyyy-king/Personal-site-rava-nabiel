@@ -9,6 +9,7 @@
       if (m.title) document.title = m.title;
       var el = document.querySelector('meta[name=description]');
       if (el && m.description) el.setAttribute('content', m.description);
+      if (window.Music) Music.init(d);
     })
     .catch(function () { app.textContent = 'Konten tidak dapat dimuat.'; });
 })();

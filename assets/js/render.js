@@ -192,5 +192,5 @@
     var items = ch.map(function (c, i) { return [c.title ? String(c.title).trim() : 'Bab ' + (i + 1), '#bab-' + (i + 1)]; });
     root.innerHTML = nav(d, items, pv, dark) + top + chs + tail;
   }
-  w.R = { render: render, renderStory: renderStory, esc: esc, url: url, fixUrl: fix, img: img, video: video, music: music, PRESETS: PRESETS, ICONS: ICONS };
+  w.R = { render: render, renderStory: renderStory, theme: theme, nav: nav, esc: esc, url: url, fixUrl: fix, img: img, video: video, music: music, PRESETS: PRESETS, ICONS: ICONS };
 })(window);

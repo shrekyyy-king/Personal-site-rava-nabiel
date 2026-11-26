@@ -1,0 +1,132 @@
+{
+  "title": "Portofolio Akademik",
+  "subtitle": "Rekam jejak akademik, penelitian, pengabdian masyarakat, dan kepemimpinan organisasi.",
+  "note": "Tambahkan bukti portofolio (tautan dokumen, sertifikat, foto, atau publikasi) pada daftar evidence di setiap item.",
+  "categories": [
+    { "id": "all", "label": "Semua" },
+    { "id": "research", "label": "Akademik & Riset" },
+    { "id": "community", "label": "Pengabdian & Lapangan" },
+    { "id": "leadership", "label": "Organisasi & Kepemimpinan" }
+  ],
+  "items": [
+    {
+      "id": "skripsi-servqual",
+      "category": "research",
+      "categoryLabel": "Akademik & Riset",
+      "period": "2026",
+      "title": "Penelitian Skripsi: Validasi Instrumen SERVQUAL Dimensi Empathy",
+      "role": "Peneliti Utama · S1 Psikologi UMS",
+      "summary": "Penelitian berjudul \"Validasi Instrumen SERVQUAL Dimensi Empathy untuk Mengukur Kualitas Layanan Akademik Universitas Muhammadiyah Surakarta\".",
+      "details": [
+        "Berfokus pada pengujian dan validasi instrumen pengukuran dimensi empati dalam konteks kualitas layanan akademik perguruan tinggi.",
+        "Menggabungkan pendekatan analitis dalam psikometri dengan pemahaman humanis terhadap pengalaman layanan mahasiswa."
+      ],
+      "tags": ["Psikometri", "SERVQUAL", "Empathy", "Layanan Akademik"],
+      "evidence": [
+        {
+          "type": "image",
+          "label": "Dokumentasi Perjalanan Akademik",
+          "src": "assets/images/ga4eo8o.webp"
+        }
+      ]
+    },
+    {
+      "id": "psikologi-klinis-ums",
+      "category": "research",
+      "categoryLabel": "Akademik & Riset",
+      "period": "2023 – Sekarang",
+      "title": "Studi Sarjana Psikologi — Fokus Minat Psikologi Klinis",
+      "role": "Mahasiswa Psikologi · Universitas Muhammadiyah Surakarta",
+      "summary": "Mempelajari bagaimana manusia berpikir, terbentuknya ketakutan dan pikiran negatif, serta pendekatan pengelolaan pola pikir secara teoritis dan praktis.",
+      "details": [
+        "Mengembangkan ketertarikan mendalam pada bidang psikologi klinis dan penerapannya dalam kehidupan nyata.",
+        "Berorientasi pada berpikir analitis sekaligus tetap humanis dalam memahami berbagai perspektif dan konteks individu.",
+        "Merencanakan studi lanjut ke Pendidikan Profesi Psikolog setelah menyelesaikan pendidikan sarjana."
+      ],
+      "tags": ["Psikologi Klinis", "Kesehatan Mental", "Analisis Perilaku"],
+      "evidence": []
+    },
+    {
+      "id": "pengabdian-klaten",
+      "category": "community",
+      "categoryLabel": "Pengabdian & Lapangan",
+      "period": "2024 – 2025",
+      "title": "Pengabdian Masyarakat untuk Guru SD Muhammadiyah & Aisyiyah Klaten",
+      "role": "Tim Pengabdian Masyarakat",
+      "summary": "Terlibat langsung dalam kegiatan pengabdian masyarakat bersama para guru SD Muhammadiyah dan Aisyiyah di Klaten.",
+      "details": [
+        "Memperluas pengalaman interaksi langsung dengan pendidik di lingkungan masyarakat.",
+        "Menerapkan wawasan psikologi pendidikan dan pendekatan interpersonal dalam konteks sekolah dasar."
+      ],
+      "tags": ["Pengabdian Masyarakat", "Klaten", "Pendidikan Dasar"],
+      "evidence": []
+    },
+    {
+      "id": "observasi-psikoedukasi-sekolah",
+      "category": "community",
+      "categoryLabel": "Pengabdian & Lapangan",
+      "period": "2024 – 2025",
+      "title": "Observasi & Psikoedukasi di Lingkungan Sekolah",
+      "role": "Observer & Fasilitator Psikoedukasi",
+      "summary": "Terjun langsung ke lingkungan sekolah untuk melakukan observasi dan kegiatan psikoedukasi bersama anak-anak dengan karakter serta latar belakang beragam.",
+      "details": [
+        "Melatih kepekaan untuk menyesuaikan diri, membangun kedekatan (rapport), dan melihat situasi dari sudut pandang anak.",
+        "Menghubungkan teori psikologi perkembangan dengan dinamika perilaku nyata di sekolah."
+      ],
+      "tags": ["Observasi", "Psikoedukasi", "Sekolah"],
+      "evidence": []
+    },
+    {
+      "id": "dpm-wakil-ketua-spl",
+      "category": "leadership",
+      "categoryLabel": "Organisasi & Kepemimpinan",
+      "period": "2026",
+      "title": "Wakil Ketua SPL (Sosial, Pendidikan, dan Legislasi) — DPM F Psikologi UMS",
+      "role": "Wakil Ketua SPL · DPM F Psikologi UMS",
+      "summary": "Mengoordinasikan dan mengawasi Komisi II serta Badan Legislasi dengan menyeimbangkan pencapaian program dan sisi kemanusiaan organisasi.",
+      "details": [
+        "Mengawal pendampingan dan advokasi mahasiswa dalam menyelesaikan persoalan Kartu Rencana Studi (KRS) melalui penyebaran informasi, pengarahan, diskusi, dan koordinasi dengan program studi.",
+        "Menanamkan nilai kepemimpinan yang aktif, kreatif, solutif, dan humanis serta membuka ruang bagi setiap gagasan dan suara mahasiswa."
+      ],
+      "tags": ["Kepemimpinan", "Advokasi KRS", "Legislasi", "Humanis"],
+      "evidence": [
+        {
+          "type": "image",
+          "label": "Dokumentasi DPM F Psikologi UMS",
+          "src": "assets/images/32tn9gx.webp"
+        }
+      ]
+    },
+    {
+      "id": "dpm-ketua-tdi-moderator",
+      "category": "leadership",
+      "categoryLabel": "Organisasi & Kepemimpinan",
+      "period": "2025",
+      "title": "Ketua Komisi Ad-Hoc Transformasi Digitalisasi & Inovasi (TDI) & Moderator Audiensi",
+      "role": "Ketua Komisi Ad-Hoc TDI & Anggota Komisi I",
+      "summary": "Mendorong pengembangan sistem kerja organisasi, penguatan branding digital DPM, serta memfasilitasi diskusi audiensi fakultas.",
+      "details": [
+        "Mengidentifikasi kesenjangan dalam sistem kerja organisasi dan merumuskan ruang perbaikan berbasis inovasi.",
+        "Menguatkan branding DPM F Psikologi UMS melalui pengembangan konten digital.",
+        "Bertugas sebagai moderator dalam audiensi permasalahan lingkungan fakultas untuk menjaga diskusi tetap konstruktif."
+      ],
+      "tags": ["Transformasi Digital", "Inovasi", "Branding", "Moderator Audiensi"],
+      "evidence": []
+    },
+    {
+      "id": "dpm-komisi1-legislasi",
+      "category": "leadership",
+      "categoryLabel": "Organisasi & Kepemimpinan",
+      "period": "2024",
+      "title": "Anggota Komisi I & Badan Legislasi — DPM F Psikologi UMS",
+      "role": "Anggota Komisi I & Badan Legislasi",
+      "summary": "Mengawali kiprah organisasi mahasiswa dengan fokus pada penyerapan aspirasi dan advokasi sarana prasarana fakultas.",
+      "details": [
+        "Mempelajari tata kerja legislasi dan advokasi mahasiswa kepada pihak terkait di fakultas.",
+        "Berfokus pada pengawalan isu sarana dan prasarana fakultas bersama mahasiswa."
+      ],
+      "tags": ["Advokasi", "Legislasi", "Sarana Prasarana"],
+      "evidence": []
+    }
+  ]
+}

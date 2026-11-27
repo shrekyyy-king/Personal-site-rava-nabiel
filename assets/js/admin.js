@@ -36,9 +36,16 @@
     d.academicPortfolio = Object.assign({ title: 'Portofolio Akademik', subtitle: '', items: [] }, d.academicPortfolio);
     d.academicPortfolio.items = Array.isArray(d.academicPortfolio.items) ? d.academicPortfolio.items : [];
     d.academicPortfolio.items.forEach(function (it) {
-      it.id = it.id || uid(); it.category = it.category || 'research';
-      it.evidence = Array.isArray(it.evidence) ? it.evidence : [];
-      it.evidence.forEach(function (ev) { ev.id = ev.id || uid(); ev.type = ev.type || 'doc'; });
+      it.id = it.id || uid(); it.category = it.category || 'research'; it.visible = it.visible !== false;
+      it.photo = it.photo || ''; it.docUrl = it.docUrl || ''; it.docLabel = it.docLabel || '';
+      // compat: migrate old evidence array → flat fields
+      if (Array.isArray(it.evidence) && it.evidence.length) {
+        var imgEv = it.evidence.find(function (e) { return e.type === 'image' && e.src; });
+        var docEv = it.evidence.find(function (e) { return e.url; });
+        if (imgEv && !it.photo) it.photo = imgEv.src;
+        if (docEv && !it.docUrl) { it.docUrl = docEv.url; it.docLabel = docEv.label || ''; }
+        delete it.evidence;
+      }
     });
     function id(x) { x.id = x.id || uid(); }
     d.socials.concat(d.sections, d.projects).forEach(id);
@@ -52,7 +59,7 @@
     function f(o, k) { if (o && typeof o[k] === 'string' && o[k]) { var v = R.fixUrl(o[k]); if (v !== o[k]) { o[k] = v; n++; } } }
     d.socials.forEach(function (x) { f(x, 'url'); }); d.sections.forEach(function (s) { s.links.forEach(function (l) { f(l, 'url'); }); });
     d.projects.forEach(function (x) { f(x, 'url'); }); f(d.contact, 'linkedin'); f(d.story, 'cvUrl');
-    d.academicPortfolio.items.forEach(function (it) { (it.evidence || []).forEach(function (ev) { f(ev, 'url'); }); });
+    d.academicPortfolio.items.forEach(function (it) { f(it, 'docUrl'); });
     if (n) { S.fixedN = (S.fixedN || 0) + n; main(); pv(); }
   }
   function validate() {
@@ -115,8 +122,7 @@
   NEW.tl = function () { return { id: uid(), period: '', title: '', org: '', desc: '' }; };
   NEW.stat = function () { return { id: uid(), value: '', label: '' }; };
   NEW.photo = function () { return { id: uid(), src: '', caption: '' }; };
-  NEW.acadItem = function () { return { id: uid(), category: 'research', period: '', title: 'Karya / Pengalaman Baru', role: '', summary: '', details: '', tags: '', visible: true, evidence: [] }; };
-  NEW.acadEv = function () { return { id: uid(), type: 'doc', label: 'Bukti Baru', src: '', url: '', note: '' }; };
+  NEW.acadItem = function () { return { id: uid(), category: 'research', period: '', title: 'Karya / Pengalaman Baru', role: '', summary: '', details: '', tags: '', photo: '', docUrl: '', docLabel: '', visible: true }; };
   var ICONOPTS = function () { return Object.keys(R.ICONS).map(function (k) { return [k, R.ICONS[k] + ' ' + k]; }); };
 
   var T = {
@@ -170,7 +176,7 @@
         '<h3>Bab</h3>' + list('story.chapters', 'chapter', 'Tambah bab', function (c, p) { return F('Judul bab', p + '.title') + F('Isi cerita', p + '.body', { t: 'ta', r: 8 }) + '<h3>Foto bab (rasio asli; lebih dari satu = bisa digeser, kolom foto menempel saat teks di-scroll)</h3><label class="filebtn">+ Unggah banyak foto sekaligus<input type="file" multiple accept="image/png,image/jpeg,image/webp" data-multi="' + p + '.photos" hidden></label>' + list(p + '.photos', 'photo', 'Tambah satu foto', function (ph, q) { return F('Foto', q + '.src', { t: 'img', max: 1400 }) + F('Keterangan (opsional)', q + '.caption'); }) + '<h3>Isi bab</h3>' + F('Video bab (YouTube / Vimeo / .mp4, opsional)', p + '.video') + F('Kutipan sorotan (opsional)', p + '.quote', { t: 'ta', r: 2 }) + F('Tampilkan', p + '.visible', { t: 'chk' }); });
     },
     academic: function () {
-      return '<h2>Portofolio Akademik</h2><p class="note">Kelola karya, riset, pengabdian, dan kepemimpinan yang tampil di halaman <code>portfolio.html</code> beserta bukti dokumentasinya.</p>' +
+      return '<h2>Portofolio Akademik</h2><p class="note">Kelola karya, pengalaman, dan bukti dokumentasi yang tampil di <code>portfolio.html</code>. Tiap item punya satu foto cover dan satu tautan bukti (sertifikat, laporan, Drive, dsb.).</p>' +
         F('Judul halaman', 'academicPortfolio.title') + F('Subjudul', 'academicPortfolio.subtitle', { t: 'ta', r: 2 }) +
         '<h3>Daftar Karya &amp; Pengalaman</h3>' +
         list('academicPortfolio.items', 'acadItem', 'Tambah item portofolio', function (it, p) {
@@ -178,16 +184,13 @@
             F('Kategori', p + '.category', { t: 'sel', o: [['research', 'Akademik & Riset'], ['community', 'Pengabdian & Lapangan'], ['leadership', 'Organisasi & Kepemimpinan']] }) +
             F('Periode (mis. 2026 atau 2024 – 2025)', p + '.period') +
             F('Peran / Jabatan', p + '.role') +
-            F('Ringkasan singkat', p + '.summary', { t: 'ta', r: 3 }) +
-            F('Poin detail (satu baris = satu poin)', p + '.details', { t: 'ta', r: 4 }) +
-            F('Tag (pisahkan dengan koma)', p + '.tags') +
-            F('Tampilkan', p + '.visible', { t: 'chk' }) +
-            '<h3>Bukti &amp; Dokumentasi</h3>' +
-            list(p + '.evidence', 'acadEv', 'Tambah bukti', function (ev, q) {
-              return F('Tipe bukti', q + '.type', { t: 'sel', o: [['image', 'Foto / Gambar'], ['doc', 'Tautan / PDF']] }) +
-                F('Label bukti (mis. Sertifikat, Dokumentasi)', q + '.label') +
-                (ev.type === 'image' ? F('Unggah foto bukti', q + '.src', { t: 'img', max: 1400 }) : F('URL bukti (atau unggah PDF di bawahnya)', q + '.url', { up: 'pdf' }) + F('Catatan (opsional, mis. PDF · 2025)', q + '.note'));
-            });
+            F('Ringkasan singkat (tampil di kartu)', p + '.summary', { t: 'ta', r: 3 }) +
+            F('Detail / poin pencapaian (satu baris = satu poin, tampil di popup)', p + '.details', { t: 'ta', r: 5 }) +
+            F('Tag keahlian (pisahkan dengan koma)', p + '.tags') +
+            F('Foto cover / dokumentasi (tampil di kartu & popup)', p + '.photo', { t: 'img', max: 1400 }) +
+            F('Tautan bukti (sertifikat, Drive, PDF — kosongkan kalau belum ada)', p + '.docUrl', { up: 'pdf' }) +
+            F('Label tautan bukti (mis. Lihat Sertifikat, Unduh Laporan)', p + '.docLabel') +
+            F('Tampilkan', p + '.visible', { t: 'chk' });
         });
     },
     music: function () {
@@ -233,7 +236,7 @@
 
   // ---------- actions ----------
   function move(l, f, t) { var a = get(S.d, l); if (t < 0 || t >= a.length || f === t) return; a.splice(t, 0, a.splice(f, 1)[0]); changed(true); }
-  function reid(x) { x.id = uid(); (x.links || []).forEach(reid); (x.photos || []).forEach(reid); (x.items || []).forEach(reid); (x.evidence || []).forEach(reid); }
+  function reid(x) { x.id = uid(); (x.links || []).forEach(reid); (x.photos || []).forEach(reid); (x.items || []).forEach(reid); }
   function saveDraft() {
     var e = validate(); if (e.length) return say(e.join(' · '), 'err');
     try { localStorage.setItem(K.draft, JSON.stringify(S.d)); } catch (x) { return say('Penyimpanan lokal penuh. Gunakan gambar yang lebih kecil.', 'err'); }
@@ -250,7 +253,7 @@
     } catch (e) { S.conn = false; say(e.message, 'err'); }
   }
   async function uploadImages(c, d) {
-    var slots = [[d.profile, 'avatar'], [d.profile, 'cover']].concat(d.projects.map(function (p) { return [p, 'thumb']; }), d.sections.reduce(function (a, s) { return a.concat(s.links.map(function (l) { return [l, 'thumb']; })); }, []), d.story.chapters.reduce(function (a, c) { return a.concat(c.photos || []); }, []).map(function (p) { return [p, 'src']; }), d.blocks.reduce(function (a, b) { return a.concat(b.photos || []); }, []).map(function (p) { return [p, 'src']; }), d.academicPortfolio.items.reduce(function (a, it) { return a.concat(it.evidence || []); }, []).map(function (ev) { return [ev, 'src']; }));
+    var slots = [[d.profile, 'avatar'], [d.profile, 'cover']].concat(d.projects.map(function (p) { return [p, 'thumb']; }), d.sections.reduce(function (a, s) { return a.concat(s.links.map(function (l) { return [l, 'thumb']; })); }, []), d.story.chapters.reduce(function (a, c) { return a.concat(c.photos || []); }, []).map(function (p) { return [p, 'src']; }), d.blocks.reduce(function (a, b) { return a.concat(b.photos || []); }, []).map(function (p) { return [p, 'src']; }), d.academicPortfolio.items.map(function (it) { return [it, 'photo']; }));
     var todo = slots.filter(function (x) { return /^data:image\//.test(x[0][x[1]] || ''); }).length, done = 0;
     for (var i = 0; i < slots.length; i++) {
       var o = slots[i][0], k = slots[i][1], m = /^data:image\/(\w+);base64,(.+)$/.exec(o[k] || '');

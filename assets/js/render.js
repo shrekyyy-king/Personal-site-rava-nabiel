@@ -237,22 +237,24 @@
       if (st.view === 'timeline') {
         grid.className = 'pf-list tl';
         grid.innerHTML = arr.map(function (it, i) {
-          var evN = (it.evidence && it.evidence.length) || 0;
+          var hasDoc = it.photo || it.docUrl || (it.evidence && it.evidence.length);
           return '<li class="tl-i rv in" style="--i:' + Math.min(i, 6) + '"><span class="tl-p">' + esc(it.period || '') + ' · ' + esc(PF_MAP[it.category] || '') + '</span>' +
             '<button type="button" class="pf-tl-btn" data-id="' + esc(it.id) + '"><b>' + esc(it.title) + '</b>' + (it.role ? '<small>' + esc(it.role) + '</small>' : '') +
-            '<p>' + esc(it.summary) + '</p><span class="pf-more">' + (evN ? evN + ' bukti terlampir · ' : '') + 'Lihat detail →</span></button></li>';
+            '<p>' + esc(it.summary) + '</p><span class="pf-more">' + (hasDoc ? '📎 Ada bukti · ' : '') + 'Lihat detail →</span></button></li>';
         }).join('');
         return;
       }
       grid.className = 'pf-list pf-grid';
       grid.innerHTML = arr.map(function (it) {
-        var ev = it.evidence || [], thumb = ev.find(function (e) { return e && e.type === 'image' && img(e.src); }), tags = pfArr(it.tags, ',');
+        var ph = img(it.photo || ''), tags = pfArr(it.tags, ',');
+        var ev = it.evidence || [], thumb = ph || (ev.find(function (e) { return e && e.type === 'image' && img(e.src); }) || {}).src;
+        var hasDoc = it.docUrl || ev.find(function (e) { return e.url; });
         return '<button type="button" class="pf-card" data-id="' + esc(it.id) + '">' +
-          (thumb ? '<div class="pf-thumb"><img src="' + esc(img(thumb.src)) + '" alt="" loading="lazy"></div>' : '') +
+          (thumb ? '<div class="pf-thumb"><img src="' + esc(img(thumb)) + '" alt="" loading="lazy"></div>' : '<div class="pf-thumb pf-thumb-ph"><span class="pf-cat-icon">' + esc(PF_MAP[it.category] ? PF_MAP[it.category][0] : '◆') + '</span></div>') +
           '<div class="pf-cb"><div class="pf-meta"><span class="pf-cat">' + esc(PF_MAP[it.category] || '') + '</span><span class="pf-per">' + esc(it.period || '') + '</span></div>' +
           '<h3>' + esc(it.title) + '</h3>' + (it.role ? '<small class="pf-role">' + esc(it.role) + '</small>' : '') +
-          '<p>' + esc(it.summary) + '</p>' + (tags.length ? '<div class="pf-tags">' + tags.slice(0, 4).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
-          '<div class="pf-foot"><span>' + (ev.length ? '📎 ' + ev.length + ' Bukti' : '📂 Siap diisi bukti') + '</span><em>Detail ↗</em></div></div></button>';
+          '<p>' + esc(it.summary) + '</p>' + (tags.length ? '<div class="pf-tags">' + tags.slice(0, 3).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+          '<div class="pf-foot"><span>' + (hasDoc ? '📎 Bukti terlampir' : '📂 Belum ada bukti') + '</span><em>Detail ↗</em></div></div></button>';
       }).join('');
     }
     function closeM() { if (modal) { modal.remove(); modal = null; document.removeEventListener('keydown', onEsc); } }
@@ -260,19 +262,33 @@
     function openM(id) {
       var it = items.find(function (x) { return x.id === id; }); if (!it) return;
       closeM();
-      var ev = it.evidence || [], det = pfArr(it.details, /\n/), tags = pfArr(it.tags, ',');
-      var evH = ev.length ? ev.map(function (e) {
-        if (e.type === 'image' && img(e.src)) return '<figure class="pf-ev-img"><img src="' + esc(img(e.src)) + '" alt="' + esc(e.label || it.title) + '">' + (e.label ? '<figcaption>' + esc(e.label) + '</figcaption>' : '') + '</figure>';
-        if (e.url) return '<a class="btn" href="' + esc(url(e.url)) + '" target="_blank" rel="noopener noreferrer"><span class="ic" aria-hidden="true">' + ICONS.doc + '</span><span class="tx"><b>' + esc(e.label || 'Lihat Bukti') + '</b>' + (e.note ? '<small>' + esc(e.note) + '</small>' : '') + '</span></a>';
-        return '';
-      }).join('') : '<p class="pf-ev-empty">Belum ada bukti terlampir. Tambahkan melalui Dashboard → tab Portofolio.</p>';
+      var det = pfArr(it.details, /\n/), tags = pfArr(it.tags, ',');
+      // support both flat (photo/docUrl) and old evidence array
+      var ph = img(it.photo || '');
+      var ev = it.evidence || [];
+      if (!ph) { var imgEv = ev.find(function (e) { return e && e.type === 'image' && img(e.src); }); if (imgEv) ph = img(imgEv.src); }
+      var docUrl = it.docUrl || '', docLabel = it.docLabel || 'Lihat Bukti';
+      if (!docUrl) { var docEv = ev.find(function (e) { return e && e.url; }); if (docEv) { docUrl = docEv.url; docLabel = docEv.label || docLabel; } }
+
+      var photoHtml = ph ? '<div class="pf-mod-photo"><img src="' + esc(ph) + '" alt="' + esc(it.title) + '"></div>' : '';
+      var docHtml = docUrl ? '<a class="pf-mod-doc" href="' + esc(url(docUrl)) + '" target="_blank" rel="noopener noreferrer"><span>↗</span> ' + esc(docLabel) + '</a>' : '';
+      var noDoc = !ph && !docUrl ? '<p class="pf-ev-empty">Belum ada bukti terlampir. Tambahkan melalui Dashboard → tab Portofolio.</p>' : '';
+
       modal = document.createElement('div'); modal.className = 'pf-mod'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-label', it.title);
-      modal.innerHTML = '<div class="pf-mod-box"><button type="button" class="pf-mod-x" aria-label="Tutup detail">✕</button>' +
-        '<div class="pf-meta"><span class="pf-cat">' + esc(PF_MAP[it.category] || '') + '</span><span class="pf-per">' + esc(it.period || '') + '</span></div>' +
-        '<h2>' + esc(it.title) + '</h2>' + (it.role ? '<p class="pf-role">' + esc(it.role) + '</p>' : '') + '<p class="pf-sum">' + esc(it.summary) + '</p>' +
-        (det.length ? '<ul class="pf-det">' + det.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
-        (tags.length ? '<div class="pf-tags">' + tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
-        '<div class="pf-ev"><h3>Bukti &amp; Dokumentasi</h3>' + evH + '</div></div>';
+      modal.innerHTML =
+        '<div class="pf-mod-box">' +
+          '<button type="button" class="pf-mod-x" aria-label="Tutup">✕</button>' +
+          (ph ? '<div class="pf-mod-hero">' + photoHtml + '<div class="pf-mod-hero-ov"><span class="pf-cat">' + esc(PF_MAP[it.category] || '') + '</span><span class="pf-per">' + esc(it.period || '') + '</span></div></div>' :
+            '<div class="pf-mod-topmeta"><span class="pf-cat">' + esc(PF_MAP[it.category] || '') + '</span><span class="pf-per">' + esc(it.period || '') + '</span></div>') +
+          '<div class="pf-mod-body">' +
+            '<h2>' + esc(it.title) + '</h2>' +
+            (it.role ? '<p class="pf-role">' + esc(it.role) + '</p>' : '') +
+            '<p class="pf-sum">' + esc(it.summary) + '</p>' +
+            (det.length ? '<ul class="pf-det">' + det.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+            (tags.length ? '<div class="pf-tags">' + tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+            (docHtml || noDoc ? '<div class="pf-mod-doc-row">' + (docHtml || noDoc) + '</div>' : '') +
+          '</div>' +
+        '</div>';
       modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('.pf-mod-x')) closeM(); });
       document.addEventListener('keydown', onEsc); document.body.appendChild(modal); modal.querySelector('.pf-mod-x').focus();
     }
